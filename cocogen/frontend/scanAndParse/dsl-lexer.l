@@ -109,6 +109,7 @@ static inline void check_c_keyword(const char *);
 
 "attributes"    { LEX_KEYWORD(T_ATTRIBUTES);}
 "children"      { LEX_KEYWORD(T_CHILDREN);}
+"rules"  		{ LEX_KEYWORD(T_RULES);}
 "constructor"   { LEX_KEYWORD(T_CONSTRUCTOR);}
 "cycle"         { LEX_KEYWORD(T_CYCLE);}
 "enum"          { in_enum = true; LEX_KEYWORD(T_ENUM);}

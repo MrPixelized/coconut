@@ -92,6 +92,7 @@ struct ctinfo yy_ctinfo;
 
 %token T_ATTRIBUTES "attributes"
 %token T_CHILDREN "children"
+%token T_RULES "rules"
 %token T_CONSTRUCTOR "construct"
 %token T_CYCLE "cycle"
 %token T_ENUM "enum"
@@ -130,10 +131,12 @@ struct ctinfo yy_ctinfo;
 
 %type<string> info
 %type<boolean> is_start is_constructor is_root
-%type<node> phase entry pass node traversal cycleheader phaseheader id action actionsbody traversalnodes prefix
-    actions childrenbody attributebody attributes attribute children child setoperation setliterals func
-    setexpr enum idlist enumvalues nodeset travdata travdatalist travdataitem nodelifetimes
-    lifetimes lifetime lifetime_range range_spec childlifetimes uid mandatory_uid gate attributelifetimes
+%type<node> phase entry pass node traversal cycleheader phaseheader id action
+	actionsbody traversalnodes prefix actions childrenbody attributebody
+	rulesbody attributes attribute children child rules rule setoperation
+	setliterals func setexpr enum idlist enumvalues nodeset travdata
+	travdatalist travdataitem nodelifetimes lifetimes lifetime lifetime_range
+	range_spec childlifetimes uid mandatory_uid gate attributelifetimes
 %type<attr_type> attribute_primitive_type
 
 %left '&' '-' '|'
@@ -586,6 +589,29 @@ is_root:
         $$ = false;
     }
     ;
+
+rulebody: T_RULES '{' rules '}'
+	{
+		$$ = $3;
+	}
+	;
+
+rules: rule ',' rules
+	{
+		RULE_NEXT($1) = $3;
+		$$ = $1;
+	}
+	| rule
+	{
+		$$ = $1;
+	}
+	;
+
+rule: T_STRINGVAL
+	{
+		$$ = $1;
+	}
+	;
 
 attributebody: T_ATTRIBUTES '{' attributes '}'
     {
