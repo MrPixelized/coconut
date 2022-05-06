@@ -518,6 +518,7 @@ node inode {
         inode next,
         child ichildren,
         attribute iattributes,
+		rule rules,
         ilifetime lifetimes
     },
 
@@ -570,6 +571,25 @@ node lifetime_range {
         int action_id,
         int next_action_id
     }
+};
+
+enum rule_type {
+	prefix = RT,
+	values {
+		template, map, rewrite
+	}
+};
+
+node rule {
+	children {
+		rule next
+	}
+
+	attributes {
+		string pattern { constructor, mandatory },
+		string result { constructor },
+		rule_type type { constructor, mandatory }
+	}
 };
 
 enum child_type {
