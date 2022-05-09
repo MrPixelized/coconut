@@ -518,7 +518,7 @@ node inode {
         inode next,
         child ichildren,
         attribute iattributes,
-		rule rules,
+		rule irules,
         ilifetime lifetimes
     },
 
@@ -583,12 +583,12 @@ enum rule_type {
 node rule {
 	children {
 		rule next
-	}
+	},
 
 	attributes {
 		string pattern { constructor, mandatory },
 		string result { constructor },
-		rule_type type { constructor, mandatory }
+		rule_type type { constructor }
 	}
 };
 
