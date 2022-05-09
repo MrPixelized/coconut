@@ -32,6 +32,9 @@ char *nodetypeToName(node_st *node) {
         case NT_CHILD:
             return "child";
             break;
+        case NT_RULE:
+            return "rule";
+            break;
         case NT_LIFETIME_RANGE:
             return "lifetime_range";
             break;
@@ -351,6 +354,24 @@ struct ccn_node *CHKchild(struct ccn_node *arg_node) {
     return arg_node;
 }
 
+struct ccn_node *CHKrule(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (RULE_NEXT(arg_node)) {
+        if (NODE_TYPE(RULE_NEXT(arg_node)) != NT_RULE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(rule) has disallowed type(%s) ", nodetypeToName(RULE_NEXT(arg_node)));
+        }
+
+    }
+
+    if (RULE_PATTERN(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(pattern) in node(rule) is missing, but specified as mandatory.\n");;
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
 struct ccn_node *CHKlifetime_range(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
@@ -459,6 +480,13 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
     if (INODE_IATTRIBUTES(arg_node)) {
         if (NODE_TYPE(INODE_IATTRIBUTES(arg_node)) != NT_ATTRIBUTE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(iattributes) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_IATTRIBUTES(arg_node)));
+        }
+
+    }
+
+    if (INODE_IRULES(arg_node)) {
+        if (NODE_TYPE(INODE_IRULES(arg_node)) != NT_RULE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(irules) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_IRULES(arg_node)));
         }
 
     }

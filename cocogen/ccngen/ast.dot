@@ -33,6 +33,8 @@ child -> id[label="name"]
 child -> ilifetime[label="lifetimes"]
 child -> child[label="next"]
 child -> id[label="type_reference"]
+rule;
+rule -> rule[label="next"]
 lifetime_range;
 lifetime_range -> id[label="target"]
 ilifetime;
@@ -49,6 +51,7 @@ inode -> id[label="name"]
 inode -> inode[label="next"]
 inode -> child[label="ichildren"]
 inode -> attribute[label="iattributes"]
+inode -> rule[label="irules"]
 inode -> ilifetime[label="lifetimes"]
 ipass;
 ipass -> id[label="name"]

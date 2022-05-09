@@ -7,10 +7,11 @@ void CopyBaseNode(node_st *target, node_st *source) {
     NODE_ECOL(target) = NODE_ECOL(source);
     NODE_BLINE(target) = NODE_BLINE(source);
     NODE_ELINE(target) = NODE_ELINE(source);
+    NODE_FILENAME(target) = STRcpy(NODE_FILENAME(source));
 }
 
-struct ccn_node *CPYid(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTid(    NULL    ,     NULL    ,     NULL);
+ccn_node *CPYid(ccn_node *arg_node) {
+    ccn_node *new_node =ASTid(    NULL    ,     NULL    ,     NULL);
     CopyBaseNode(new_node, arg_node);
     ID_NEXT(new_node) = TRAVopt(ID_NEXT(arg_node));
     ID_ORIG(new_node) = STRcpy(ID_ORIG(arg_node));
@@ -22,8 +23,8 @@ struct ccn_node *CPYid(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYienum(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTienum(    NULL    ,     NULL    ,     NULL    ,     NULL);
+ccn_node *CPYienum(ccn_node *arg_node) {
+    ccn_node *new_node =ASTienum(    NULL    ,     NULL    ,     NULL    ,     NULL);
     CopyBaseNode(new_node, arg_node);
     IENUM_VALS(new_node) = TRAVopt(IENUM_VALS(arg_node));
     IENUM_NAME(new_node) = TRAVopt(IENUM_NAME(arg_node));
@@ -33,8 +34,8 @@ struct ccn_node *CPYienum(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYattribute(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTattribute();
+ccn_node *CPYattribute(ccn_node *arg_node) {
+    ccn_node *new_node =ASTattribute();
     CopyBaseNode(new_node, arg_node);
     ATTRIBUTE_NAME(new_node) = TRAVopt(ATTRIBUTE_NAME(arg_node));
     ATTRIBUTE_TYPE_REFERENCE(new_node) = TRAVopt(ATTRIBUTE_TYPE_REFERENCE(arg_node));
@@ -45,8 +46,8 @@ struct ccn_node *CPYattribute(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYitravdata(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTitravdata(    NULL);
+ccn_node *CPYitravdata(ccn_node *arg_node) {
+    ccn_node *new_node =ASTitravdata(    NULL);
     CopyBaseNode(new_node, arg_node);
     ITRAVDATA_NAME(new_node) = TRAVopt(ITRAVDATA_NAME(arg_node));
     ITRAVDATA_TYPE_REFERENCE(new_node) = TRAVopt(ITRAVDATA_TYPE_REFERENCE(arg_node));
@@ -56,8 +57,8 @@ struct ccn_node *CPYitravdata(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYsetoperation(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTsetoperation(    NULL    ,     NULL    ,     0);
+ccn_node *CPYsetoperation(ccn_node *arg_node) {
+    ccn_node *new_node =ASTsetoperation(    NULL    ,     NULL    ,     0);
     CopyBaseNode(new_node, arg_node);
     SETOPERATION_LEFT(new_node) = TRAVopt(SETOPERATION_LEFT(arg_node));
     SETOPERATION_RIGHT(new_node) = TRAVopt(SETOPERATION_RIGHT(arg_node));
@@ -65,8 +66,8 @@ struct ccn_node *CPYsetoperation(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYsetliteral(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTsetliteral(    NULL);
+ccn_node *CPYsetliteral(ccn_node *arg_node) {
+    ccn_node *new_node =ASTsetliteral(    NULL);
     CopyBaseNode(new_node, arg_node);
     SETLITERAL_REFERENCE(new_node) = TRAVopt(SETLITERAL_REFERENCE(arg_node));
     SETLITERAL_LEFT(new_node) = TRAVopt(SETLITERAL_LEFT(arg_node));
@@ -74,15 +75,15 @@ struct ccn_node *CPYsetliteral(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYsetreference(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTsetreference();
+ccn_node *CPYsetreference(ccn_node *arg_node) {
+    ccn_node *new_node =ASTsetreference();
     CopyBaseNode(new_node, arg_node);
     SETREFERENCE_REFERENCE(new_node) = TRAVopt(SETREFERENCE_REFERENCE(arg_node));
     return new_node;
 }
 
-struct ccn_node *CPYste(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTste();
+ccn_node *CPYste(ccn_node *arg_node) {
+    ccn_node *new_node =ASTste();
     CopyBaseNode(new_node, arg_node);
     STE_NEXT(new_node) = TRAVopt(STE_NEXT(arg_node));
     STE_KEY(new_node) = STE_KEY(arg_node);
@@ -90,8 +91,8 @@ struct ccn_node *CPYste(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYchild(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTchild(    NULL);
+ccn_node *CPYchild(ccn_node *arg_node) {
+    ccn_node *new_node =ASTchild(    NULL);
     CopyBaseNode(new_node, arg_node);
     CHILD_NAME(new_node) = TRAVopt(CHILD_NAME(arg_node));
     CHILD_LIFETIMES(new_node) = TRAVopt(CHILD_LIFETIMES(arg_node));
@@ -103,8 +104,18 @@ struct ccn_node *CPYchild(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYlifetime_range(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTlifetime_range();
+ccn_node *CPYrule(ccn_node *arg_node) {
+    ccn_node *new_node =ASTrule(    NULL    ,     NULL    ,     0);
+    CopyBaseNode(new_node, arg_node);
+    RULE_NEXT(new_node) = TRAVopt(RULE_NEXT(arg_node));
+    RULE_PATTERN(new_node) = STRcpy(RULE_PATTERN(arg_node));
+    RULE_RESULT(new_node) = STRcpy(RULE_RESULT(arg_node));
+    RULE_TYPE(new_node) = RULE_TYPE(arg_node);
+    return new_node;
+}
+
+ccn_node *CPYlifetime_range(ccn_node *arg_node) {
+    ccn_node *new_node =ASTlifetime_range();
     CopyBaseNode(new_node, arg_node);
     LIFETIME_RANGE_TARGET(new_node) = TRAVopt(LIFETIME_RANGE_TARGET(arg_node));
     LIFETIME_RANGE_INCLUSIVE(new_node) = LIFETIME_RANGE_INCLUSIVE(arg_node);
@@ -113,8 +124,8 @@ struct ccn_node *CPYlifetime_range(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYilifetime(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTilifetime();
+ccn_node *CPYilifetime(ccn_node *arg_node) {
+    ccn_node *new_node =ASTilifetime();
     CopyBaseNode(new_node, arg_node);
     ILIFETIME_BEGIN(new_node) = TRAVopt(ILIFETIME_BEGIN(arg_node));
     ILIFETIME_END(new_node) = TRAVopt(ILIFETIME_END(arg_node));
@@ -123,8 +134,8 @@ struct ccn_node *CPYilifetime(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYinodeset(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTinodeset();
+ccn_node *CPYinodeset(ccn_node *arg_node) {
+    ccn_node *new_node =ASTinodeset();
     CopyBaseNode(new_node, arg_node);
     INODESET_NAME(new_node) = TRAVopt(INODESET_NAME(arg_node));
     INODESET_EXPR(new_node) = TRAVopt(INODESET_EXPR(arg_node));
@@ -134,13 +145,14 @@ struct ccn_node *CPYinodeset(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYinode(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTinode(    NULL    ,     NULL);
+ccn_node *CPYinode(ccn_node *arg_node) {
+    ccn_node *new_node =ASTinode(    NULL    ,     NULL);
     CopyBaseNode(new_node, arg_node);
     INODE_NAME(new_node) = TRAVopt(INODE_NAME(arg_node));
     INODE_NEXT(new_node) = TRAVopt(INODE_NEXT(arg_node));
     INODE_ICHILDREN(new_node) = TRAVopt(INODE_ICHILDREN(arg_node));
     INODE_IATTRIBUTES(new_node) = TRAVopt(INODE_IATTRIBUTES(arg_node));
+    INODE_IRULES(new_node) = TRAVopt(INODE_IRULES(arg_node));
     INODE_LIFETIMES(new_node) = TRAVopt(INODE_LIFETIMES(arg_node));
     INODE_IIFNO(new_node) = STRcpy(INODE_IIFNO(arg_node));
     INODE_IS_ROOT(new_node) = INODE_IS_ROOT(arg_node);
@@ -148,8 +160,8 @@ struct ccn_node *CPYinode(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYipass(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTipass(    NULL    ,     NULL);
+ccn_node *CPYipass(ccn_node *arg_node) {
+    ccn_node *new_node =ASTipass(    NULL    ,     NULL);
     CopyBaseNode(new_node, arg_node);
     IPASS_NAME(new_node) = TRAVopt(IPASS_NAME(arg_node));
     IPASS_IPREFIX(new_node) = TRAVopt(IPASS_IPREFIX(arg_node));
@@ -159,8 +171,8 @@ struct ccn_node *CPYipass(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYitraversal(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTitraversal(    NULL);
+ccn_node *CPYitraversal(ccn_node *arg_node) {
+    ccn_node *new_node =ASTitraversal(    NULL);
     CopyBaseNode(new_node, arg_node);
     ITRAVERSAL_NAME(new_node) = TRAVopt(ITRAVERSAL_NAME(arg_node));
     ITRAVERSAL_IPREFIX(new_node) = TRAVopt(ITRAVERSAL_IPREFIX(arg_node));
@@ -172,8 +184,8 @@ struct ccn_node *CPYitraversal(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYiphase(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTiphase(    NULL    ,     0);
+ccn_node *CPYiphase(ccn_node *arg_node) {
+    ccn_node *new_node =ASTiphase(    NULL    ,     0);
     CopyBaseNode(new_node, arg_node);
     IPHASE_NAME(new_node) = TRAVopt(IPHASE_NAME(arg_node));
     IPHASE_IPREFIX(new_node) = TRAVopt(IPHASE_IPREFIX(arg_node));
@@ -186,8 +198,8 @@ struct ccn_node *CPYiphase(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYiactions(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTiactions();
+ccn_node *CPYiactions(ccn_node *arg_node) {
+    ccn_node *new_node =ASTiactions();
     CopyBaseNode(new_node, arg_node);
     IACTIONS_REFERENCE(new_node) = TRAVopt(IACTIONS_REFERENCE(arg_node));
     IACTIONS_NEXT(new_node) = TRAVopt(IACTIONS_NEXT(arg_node));
@@ -195,8 +207,8 @@ struct ccn_node *CPYiactions(struct ccn_node *arg_node) {
     return new_node;
 }
 
-struct ccn_node *CPYast(struct ccn_node *arg_node) {
-    struct ccn_node *new_node = ASTast();
+ccn_node *CPYast(ccn_node *arg_node) {
+    ccn_node *new_node =ASTast();
     CopyBaseNode(new_node, arg_node);
     AST_IPHASES(new_node) = TRAVopt(AST_IPHASES(arg_node));
     AST_ITRAVERSALS(new_node) = TRAVopt(AST_ITRAVERSALS(arg_node));

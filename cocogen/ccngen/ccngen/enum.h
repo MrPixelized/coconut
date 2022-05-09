@@ -18,6 +18,7 @@ enum ccn_nodetype {
     NT_SETREFERENCE,
     NT_STE,
     NT_CHILD,
+    NT_RULE,
     NT_LIFETIME_RANGE,
     NT_ILIFETIME,
     NT_INODESET,
@@ -132,6 +133,13 @@ enum child_type {
     CT_NULL,
     CT_inode,
     CT_inodeset,
+};
+
+enum rule_type {
+    RT_NULL,
+    RT_template,
+    RT_map,
+    RT_rewrite,
 };
 
 enum lifetime_type {

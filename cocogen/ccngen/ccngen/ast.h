@@ -133,6 +133,20 @@ struct NODE_DATA_CHILD {
     int is_mandatory;
 };
 
+struct NODE_DATA_RULE {
+    union NODE_CHILDREN_RULE {
+        struct NODE_CHILDREN_RULE_STRUCT {
+            node_st *next;
+        } rule_children_st;
+
+        node_st *rule_children_at[1];
+    } rule_children;
+
+    char * pattern;
+    char * result;
+    enum rule_type type;
+};
+
 struct NODE_DATA_LIFETIME_RANGE {
     union NODE_CHILDREN_LIFETIME_RANGE {
         struct NODE_CHILDREN_LIFETIME_RANGE_STRUCT {
@@ -183,10 +197,11 @@ struct NODE_DATA_INODE {
             node_st *next;
             node_st *ichildren;
             node_st *iattributes;
+            node_st *irules;
             node_st *lifetimes;
         } inode_children_st;
 
-        node_st *inode_children_at[5];
+        node_st *inode_children_at[6];
     } inode_children;
 
     char * iifno;
@@ -319,6 +334,10 @@ struct NODE_DATA_AST {
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
+#define RULE_NEXT(n) ((n)->data.N_rule->rule_children.rule_children_st.next)
+#define RULE_PATTERN(n) ((n)->data.N_rule->pattern)
+#define RULE_RESULT(n) ((n)->data.N_rule->result)
+#define RULE_TYPE(n) ((n)->data.N_rule->type)
 #define LIFETIME_RANGE_TARGET(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.target)
 #define LIFETIME_RANGE_INCLUSIVE(n) ((n)->data.N_lifetime_range->inclusive)
 #define LIFETIME_RANGE_ACTION_ID(n) ((n)->data.N_lifetime_range->action_id)
@@ -336,6 +355,7 @@ struct NODE_DATA_AST {
 #define INODE_NEXT(n) ((n)->data.N_inode->inode_children.inode_children_st.next)
 #define INODE_ICHILDREN(n) ((n)->data.N_inode->inode_children.inode_children_st.ichildren)
 #define INODE_IATTRIBUTES(n) ((n)->data.N_inode->inode_children.inode_children_st.iattributes)
+#define INODE_IRULES(n) ((n)->data.N_inode->inode_children.inode_children_st.irules)
 #define INODE_LIFETIMES(n) ((n)->data.N_inode->inode_children.inode_children_st.lifetimes)
 #define INODE_IIFNO(n) ((n)->data.N_inode->iifno)
 #define INODE_IS_ROOT(n) ((n)->data.N_inode->is_root)
@@ -384,6 +404,7 @@ node_st *ASTsetliteral(node_st *reference);
 node_st *ASTsetreference();
 node_st *ASTste();
 node_st *ASTchild(node_st *name);
+node_st *ASTrule(char * pattern, char * result, enum rule_type type);
 node_st *ASTlifetime_range();
 node_st *ASTilifetime();
 node_st *ASTinodeset();
@@ -403,6 +424,7 @@ union NODE_DATA {
     struct NODE_DATA_INODESET *N_inodeset;
     struct NODE_DATA_ILIFETIME *N_ilifetime;
     struct NODE_DATA_LIFETIME_RANGE *N_lifetime_range;
+    struct NODE_DATA_RULE *N_rule;
     struct NODE_DATA_CHILD *N_child;
     struct NODE_DATA_STE *N_ste;
     struct NODE_DATA_SETREFERENCE *N_setreference;
@@ -417,6 +439,7 @@ union NODE_DATA {
 #define NODE_TYPE(n) ((n)->nodetype)
 #define NODE_CHILDREN(n) ((n)->children)
 #define NODE_NUMCHILDREN(n) ((n)->num_children)
+#define NODE_FILENAME(n) ((n)->filename)
 #define NODE_BLINE(n) ((n)->begin_line)
 #define NODE_ELINE(n) ((n)->end_line)
 #define NODE_BCOL(n) ((n)->begin_col)
@@ -425,6 +448,7 @@ typedef struct ccn_node {
     enum ccn_nodetype nodetype;
     union NODE_DATA data;
     struct ccn_node **children;
+    char *filename;
     long int num_children;
     uint32_t begin_line;
     uint32_t end_line;

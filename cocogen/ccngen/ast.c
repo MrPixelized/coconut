@@ -4,6 +4,7 @@ node_st *NewNode() {
     node_st *node = MEMmalloc(sizeof(node_st));
     NODE_TYPE(node) = NT_NULL;
     NODE_CHILDREN(node) = NULL;
+    NODE_FILENAME(node) = NULL;
     NODE_NUMCHILDREN(node) = 0;
     NODE_BLINE(node) = 0;
     NODE_ELINE(node) = 0;
@@ -124,6 +125,18 @@ node_st *ASTchild(node_st *name) {
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
+node_st *ASTrule(char * pattern, char * result, enum rule_type type) {
+    node_st *node = NewNode();
+    node->data.N_rule = MEMmalloc(sizeof(struct NODE_DATA_RULE));
+    NODE_TYPE(node) = NT_RULE;
+    RULE_NEXT(node) = NULL;
+    RULE_PATTERN(node) = pattern;
+    RULE_RESULT(node) = result;
+    RULE_TYPE(node) = type;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_rule->rule_children.rule_children_at;
+    return node;}
+
 node_st *ASTlifetime_range() {
     node_st *node = NewNode();
     node->data.N_lifetime_range = MEMmalloc(sizeof(struct NODE_DATA_LIFETIME_RANGE));
@@ -169,11 +182,12 @@ node_st *ASTinode(node_st *name, char * iifno) {
     INODE_NEXT(node) = NULL;
     INODE_ICHILDREN(node) = NULL;
     INODE_IATTRIBUTES(node) = NULL;
+    INODE_IRULES(node) = NULL;
     INODE_LIFETIMES(node) = NULL;
     INODE_IIFNO(node) = iifno;
     INODE_IS_ROOT(node) = 0;
     INODE_INDEX(node) = 0;
-    NODE_NUMCHILDREN(node) = 5;
+    NODE_NUMCHILDREN(node) = 6;
     NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
     return node;}
 
