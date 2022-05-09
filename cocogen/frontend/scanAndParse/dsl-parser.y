@@ -583,7 +583,7 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
-        INODE_RULES($$) = $rules;
+        INODE_IRULES($$) = $rules;
         INODE_LIFETIMES($$) = $lifetimes;
     }
 	| is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebody[attributes] ',' rulebody[rules] '}'
@@ -592,14 +592,14 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
         INODE_IATTRIBUTES($$) = $attributes;
-        INODE_RULES($$) = $rules;
+        INODE_IRULES($$) = $rules;
     }
 	| is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' rulebody[rules] ',' nodelifetimes[lifetimes] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
-        INODE_RULES($$) = $rules;
+        INODE_IRULES($$) = $rules;
         INODE_LIFETIMES($$) = $lifetimes;
     }
 	| is_root[root] T_NODE id[name] '{'  attributebody[attributes] ',' rulebody[rules] ',' nodelifetimes[lifetimes] '}'
@@ -607,7 +607,7 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_IATTRIBUTES($$) = $attributes;
-        INODE_RULES($$) = $rules;
+        INODE_IRULES($$) = $rules;
         INODE_LIFETIMES($$) = $lifetimes;
     }
 	| is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' rulebody[rules] '}'
@@ -615,14 +615,14 @@ node: is_root[root] T_NODE id[name] '{'  childrenbody[children] ',' attributebod
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_ICHILDREN($$) = $children;
-        INODE_RULES($$) = $rules;
+        INODE_IRULES($$) = $rules;
     }
 	| is_root[root] T_NODE id[name] '{'  attributebody[attributes] ',' rulebody[rules] '}'
     {
         $$ = ASTinode($name, NULL);
         INODE_IS_ROOT($$) = $root;
         INODE_IATTRIBUTES($$) = $attributes;
-        INODE_RULES($$) = $rules;
+        INODE_IRULES($$) = $rules;
     }
     ;
 
