@@ -6,22 +6,21 @@
  * primitives types. Attribute nodes are shallow copied.
  */
 
+#include "assert.h"
 #include <stddef.h>
 #include <stdio.h>
-#include "assert.h"
 
-#include "globals.h"
-#include "gen_helpers/out_macros.h"
-#include "palm/ctinfo.h"
-#include "palm/str.h"
 #include "ccn/dynamic_core.h"
 #include "dynamic_backend/gen_helpers.h"
+#include "gen_helpers/out_macros.h"
+#include "globals.h"
+#include "palm/ctinfo.h"
+#include "palm/str.h"
 
 static int arg_num = 0;
 static node_st *curr_node;
 
-node_st *DGCTast(node_st *node)
-{
+node_st *DGCTast(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
     GNopenSourceFile(ctx, "ccn_copy.c");
     OUT("#include \"ccngen/ast.h\"\n");
@@ -39,40 +38,28 @@ node_st *DGCTast(node_st *node)
     return node;
 }
 
-node_st *DGCTiactions(node_st *node)
-{
-    return node;
-}
+node_st *DGCTiactions(node_st *node) { return node; }
 
-node_st *DGCTiphase(node_st *node)
-{
-    return node;
-}
+node_st *DGCTiphase(node_st *node) { return node; }
 
-node_st *DGCTitraversal(node_st *node)
-{
-    return node;
-}
+node_st *DGCTitraversal(node_st *node) { return node; }
 
-node_st *DGCTitravdata(node_st *node)
-{
-    return node;
-}
+node_st *DGCTitravdata(node_st *node) { return node; }
 
-node_st *DGCTipass(node_st *node)
-{
+node_st *DGCTipass(node_st *node) {
     TRAVchildren(node);
     return node;
 }
 
-node_st *DGCTinode(node_st *node)
-{
+node_st *DGCTinode(node_st *node) {
     const char *node_argument_name = "arg_node";
     const char *new_node_name = "new_node";
     GeneratorContext *ctx = globals.gen_ctx;
     curr_node = node;
     arg_num = 0;
-    OUT_START_FUNC(DGH_TRAV_FUNC_SIG(), "CPY", DGH_TRAVERSAL_TARGET_ID(INODE_NAME(node)), node_argument_name);
+    OUT_START_FUNC(DGH_TRAV_FUNC_SIG(), "CPY",
+                   DGH_TRAVERSAL_TARGET_ID(INODE_NAME(node)),
+                   node_argument_name);
     TRAVstart(node, TRAV_DGCC);
     OUT_STATEMENT("CopyBaseNode(%s, %s)", new_node_name, node_argument_name);
     TRAVopt(INODE_ICHILDREN(node));
@@ -83,79 +70,63 @@ node_st *DGCTinode(node_st *node)
     return node;
 }
 
-node_st *DGCTinodeset(node_st *node)
-{
-    return node;
-}
+node_st *DGCTinodeset(node_st *node) { return node; }
 
-node_st *DGCTchild(node_st *node)
-{
+node_st *DGCTchild(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *child_name = ID_UPR(CHILD_NAME(node));
-    OUT_FIELD("%s_%s(new_node) = TRAVopt(%s_%s(arg_node))", node_name, child_name, node_name, child_name);
+    OUT_FIELD("%s_%s(new_node) = TRAVopt(%s_%s(arg_node))", node_name,
+              child_name, node_name, child_name);
     TRAVopt(CHILD_NEXT(node));
     return node;
 }
 
-node_st *DGCTattribute(node_st *node)
-{
+node_st *DGCTattribute(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
     char *node_name = ID_UPR(INODE_NAME(curr_node));
     char *attr_name = ID_UPR(ATTRIBUTE_NAME(node));
     if (ATTRIBUTE_TYPE(node) == AT_string) {
-        OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name, attr_name, node_name, attr_name);
+        OUT_FIELD("%s_%s(new_node) = STRcpy(%s_%s(arg_node))", node_name,
+                  attr_name, node_name, attr_name);
     } else {
-        OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name, node_name, attr_name);
+        OUT_FIELD("%s_%s(new_node) = %s_%s(arg_node)", node_name, attr_name,
+                  node_name, attr_name);
     }
     TRAVopt(ATTRIBUTE_NEXT(node));
     return node;
 }
 
-node_st *DGCTste(node_st *node)
-{
-
+// TODO: look at
+node_st *DGCTrule(node_st *node) {
     TRAVchildren(node);
     return node;
 }
 
-node_st *DGCTsetoperation(node_st *node)
-{
-
+node_st *DGCTste(node_st *node) {
     TRAVchildren(node);
     return node;
 }
 
-node_st *DGCTsetliteral(node_st *node)
-{
-
+node_st *DGCTsetoperation(node_st *node) {
     TRAVchildren(node);
     return node;
 }
 
-node_st *DGCTsetreference(node_st *node)
-{
-
+node_st *DGCTsetliteral(node_st *node) {
     TRAVchildren(node);
     return node;
 }
 
-node_st *DGCTienum(node_st *node)
-{
+node_st *DGCTsetreference(node_st *node) {
+    TRAVchildren(node);
     return node;
 }
 
-node_st *DGCTid(node_st *node)
-{
-    return node;
-}
+node_st *DGCTienum(node_st *node) { return node; }
 
-node_st *DGCTilifetime(node_st *node)
-{
-    return node;
-}
+node_st *DGCTid(node_st *node) { return node; }
 
-node_st *DGCTlifetime_range(node_st *node)
-{
-    return node;
-}
+node_st *DGCTilifetime(node_st *node) { return node; }
+
+node_st *DGCTlifetime_range(node_st *node) { return node; }
