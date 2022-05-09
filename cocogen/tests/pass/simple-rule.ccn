@@ -1,0 +1,15 @@
+root node ast {
+    attributes {
+        int val {}
+    },
+
+	rules {
+		"{val}"
+	}
+};
+
+start phase dooo {
+    actions {
+        pass x;
+    }
+};
