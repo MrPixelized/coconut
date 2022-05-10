@@ -35,12 +35,14 @@ node_st *BRTast(node_st *node) {
 
 node_st *BRTrule(node_st *node) {
     RTE_RULE(last_rte) = node;
-    RTE_NEXT(last_rte) = ASTrte();
-    last_rte = RTE_NEXT(last_rte);
 
-    printf("bingo bongo\n");
-    TRAVchildren(node);
-    RULE_NEXT(node) = NULL;
+    if (RULE_NEXT(node)) {
+        RTE_NEXT(last_rte) = ASTrte();
+        last_rte = RTE_NEXT(last_rte);
+        TRAVchildren(node);
+        RULE_NEXT(node) = NULL;
+    }
+
     return node;
 }
 
