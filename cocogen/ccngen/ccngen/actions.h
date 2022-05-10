@@ -56,6 +56,8 @@ ccn_node *BRTinode(ccn_node *);
 ccn_node *BRTinode(ccn_node *);
 ccn_node *BRTrule(ccn_node *);
 ccn_node *BRTrule(ccn_node *);
+ccn_node *BRTrte(ccn_node *);
+ccn_node *BRTrte(ccn_node *);
 struct ccn_node *BSTid(struct ccn_node *node);
 struct ccn_node *BSTienum(struct ccn_node *node);
 struct ccn_node *BSTattribute(struct ccn_node *node);
