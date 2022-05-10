@@ -62,6 +62,14 @@ struct ccn_node *DELsetreference(struct ccn_node *arg_node) {
     return NULL;
 }
 
+struct ccn_node *DELrte(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_rte);
+    MEMfree(arg_node);
+    return NULL;
+}
+
 struct ccn_node *DELste(struct ccn_node *arg_node) {
     TRAVchildren(arg_node);
     MEMfree(NODE_FILENAME(arg_node));

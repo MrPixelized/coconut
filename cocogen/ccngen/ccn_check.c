@@ -26,6 +26,9 @@ char *nodetypeToName(node_st *node) {
         case NT_SETREFERENCE:
             return "setreference";
             break;
+        case NT_RTE:
+            return "rte";
+            break;
         case NT_STE:
             return "ste";
             break;
@@ -240,7 +243,7 @@ struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
         CTI(CTI_ERROR, true, "Child(right) in node(setoperation) is missing, but specified as mandatory.\n");;
     }
 
-    if (action_id >= 8 && true) {
+    if (action_id >= 9 && true) {
         CTI(CTI_ERROR, true, "Found disallowed node(setoperation) in tree.\n");
     }
 
@@ -286,8 +289,29 @@ struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
 
     }
 
-    if (action_id >= 8 || false) {
+    if (action_id >= 9 || false) {
         CTI(CTI_ERROR, true, "Found disallowed Found disallowed node(setreference) in tree. in tree.\n");
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKrte(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (RTE_RULE(arg_node)) {
+        if (NODE_TYPE(RTE_RULE(arg_node)) != NT_RULE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(rule) of node(rte) has disallowed type(%s) ", nodetypeToName(RTE_RULE(arg_node)));
+        }
+
+    }
+
+    if (RTE_NEXT(arg_node)) {
+        if (NODE_TYPE(RTE_NEXT(arg_node)) != NT_RTE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(rte) has disallowed type(%s) ", nodetypeToName(RTE_NEXT(arg_node)));
+        }
+
     }
 
     TRAVchildren(arg_node);
@@ -694,6 +718,13 @@ struct ccn_node *CHKast(struct ccn_node *arg_node) {
     if (AST_STABLE(arg_node)) {
         if (NODE_TYPE(AST_STABLE(arg_node)) != NT_STE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(stable) of node(ast) has disallowed type(%s) ", nodetypeToName(AST_STABLE(arg_node)));
+        }
+
+    }
+
+    if (AST_RTABLE(arg_node)) {
+        if (NODE_TYPE(AST_RTABLE(arg_node)) != NT_RTE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(rtable) of node(ast) has disallowed type(%s) ", nodetypeToName(AST_RTABLE(arg_node)));
         }
 
     }

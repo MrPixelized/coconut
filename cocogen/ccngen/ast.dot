@@ -24,6 +24,9 @@ setliteral -> setliteral[label="left"]
 setliteral -> setliteral[label="right"]
 setreference;
 setreference -> id[label="reference"]
+rte;
+rte -> rule[label="rule"]
+rte -> rte[label="next"]
 ste;
 ste -> ste[label="next"]
 ste -> id[color=red, label="key"]
@@ -81,6 +84,7 @@ ast -> inode[label="inodes"]
 ast -> inodeset[label="inodesets"]
 ast -> ienum[label="enums"]
 ast -> ste[label="stable"]
+ast -> rte[label="rtable"]
 ast -> inode[color=red, label="root_node"]
 ast -> iphase[color=red, label="start_phase"]
 setexpr;

@@ -103,6 +103,18 @@ struct NODE_DATA_SETREFERENCE {
 
 };
 
+struct NODE_DATA_RTE {
+    union NODE_CHILDREN_RTE {
+        struct NODE_CHILDREN_RTE_STRUCT {
+            node_st *rule;
+            node_st *next;
+        } rte_children_st;
+
+        node_st *rte_children_at[2];
+    } rte_children;
+
+};
+
 struct NODE_DATA_STE {
     union NODE_CHILDREN_STE {
         struct NODE_CHILDREN_STE_STRUCT {
@@ -282,9 +294,10 @@ struct NODE_DATA_AST {
             node_st *inodesets;
             node_st *enums;
             node_st *stable;
+            node_st *rtable;
         } ast_children_st;
 
-        node_st *ast_children_at[7];
+        node_st *ast_children_at[8];
     } ast_children;
 
     int num_traversals;
@@ -324,6 +337,8 @@ struct NODE_DATA_AST {
 #define SETLITERAL_LEFT(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.left)
 #define SETLITERAL_RIGHT(n) ((n)->data.N_setliteral->setliteral_children.setliteral_children_st.right)
 #define SETREFERENCE_REFERENCE(n) ((n)->data.N_setreference->setreference_children.setreference_children_st.reference)
+#define RTE_RULE(n) ((n)->data.N_rte->rte_children.rte_children_st.rule)
+#define RTE_NEXT(n) ((n)->data.N_rte->rte_children.rte_children_st.next)
 #define STE_NEXT(n) ((n)->data.N_ste->ste_children.ste_children_st.next)
 #define STE_KEY(n) ((n)->data.N_ste->key)
 #define STE_VALUE(n) ((n)->data.N_ste->value)
@@ -390,6 +405,7 @@ struct NODE_DATA_AST {
 #define AST_INODESETS(n) ((n)->data.N_ast->ast_children.ast_children_st.inodesets)
 #define AST_ENUMS(n) ((n)->data.N_ast->ast_children.ast_children_st.enums)
 #define AST_STABLE(n) ((n)->data.N_ast->ast_children.ast_children_st.stable)
+#define AST_RTABLE(n) ((n)->data.N_ast->ast_children.ast_children_st.rtable)
 #define AST_NUM_TRAVERSALS(n) ((n)->data.N_ast->num_traversals)
 #define AST_NUM_NODES(n) ((n)->data.N_ast->num_nodes)
 #define AST_ROOT_NODE(n) ((n)->data.N_ast->root_node)
@@ -402,6 +418,7 @@ node_st *ASTitravdata(node_st *name);
 node_st *ASTsetoperation(node_st *left, node_st *right, enum setoperation_type type);
 node_st *ASTsetliteral(node_st *reference);
 node_st *ASTsetreference();
+node_st *ASTrte();
 node_st *ASTste();
 node_st *ASTchild(node_st *name);
 node_st *ASTrule(char * pattern);
@@ -427,6 +444,7 @@ union NODE_DATA {
     struct NODE_DATA_RULE *N_rule;
     struct NODE_DATA_CHILD *N_child;
     struct NODE_DATA_STE *N_ste;
+    struct NODE_DATA_RTE *N_rte;
     struct NODE_DATA_SETREFERENCE *N_setreference;
     struct NODE_DATA_SETLITERAL *N_setliteral;
     struct NODE_DATA_SETOPERATION *N_setoperation;

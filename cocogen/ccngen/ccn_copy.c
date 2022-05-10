@@ -82,6 +82,14 @@ ccn_node *CPYsetreference(ccn_node *arg_node) {
     return new_node;
 }
 
+ccn_node *CPYrte(ccn_node *arg_node) {
+    ccn_node *new_node =ASTrte();
+    CopyBaseNode(new_node, arg_node);
+    RTE_RULE(new_node) = TRAVopt(RTE_RULE(arg_node));
+    RTE_NEXT(new_node) = TRAVopt(RTE_NEXT(arg_node));
+    return new_node;
+}
+
 ccn_node *CPYste(ccn_node *arg_node) {
     ccn_node *new_node =ASTste();
     CopyBaseNode(new_node, arg_node);
@@ -217,6 +225,7 @@ ccn_node *CPYast(ccn_node *arg_node) {
     AST_INODESETS(new_node) = TRAVopt(AST_INODESETS(arg_node));
     AST_ENUMS(new_node) = TRAVopt(AST_ENUMS(arg_node));
     AST_STABLE(new_node) = TRAVopt(AST_STABLE(arg_node));
+    AST_RTABLE(new_node) = TRAVopt(AST_RTABLE(arg_node));
     AST_NUM_TRAVERSALS(new_node) = AST_NUM_TRAVERSALS(arg_node);
     AST_NUM_NODES(new_node) = AST_NUM_NODES(arg_node);
     AST_ROOT_NODE(new_node) = AST_ROOT_NODE(arg_node);

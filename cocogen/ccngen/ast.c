@@ -99,6 +99,16 @@ node_st *ASTsetreference() {
     NODE_CHILDREN(node) = node->data.N_setreference->setreference_children.setreference_children_at;
     return node;}
 
+node_st *ASTrte() {
+    node_st *node = NewNode();
+    node->data.N_rte = MEMmalloc(sizeof(struct NODE_DATA_RTE));
+    NODE_TYPE(node) = NT_RTE;
+    RTE_RULE(node) = NULL;
+    RTE_NEXT(node) = NULL;
+    NODE_NUMCHILDREN(node) = 2;
+    NODE_CHILDREN(node) = node->data.N_rte->rte_children.rte_children_at;
+    return node;}
+
 node_st *ASTste() {
     node_st *node = NewNode();
     node->data.N_ste = MEMmalloc(sizeof(struct NODE_DATA_STE));
@@ -257,12 +267,13 @@ node_st *ASTast() {
     AST_INODESETS(node) = NULL;
     AST_ENUMS(node) = NULL;
     AST_STABLE(node) = NULL;
+    AST_RTABLE(node) = NULL;
     AST_NUM_TRAVERSALS(node) = 0;
     AST_NUM_NODES(node) = 0;
     AST_ROOT_NODE(node) = NULL;
     AST_START_PHASE(node) = NULL;
     AST_USES_UNSAFE(node) = false;
-    NODE_NUMCHILDREN(node) = 7;
+    NODE_NUMCHILDREN(node) = 8;
     NODE_CHILDREN(node) = node->data.N_ast->ast_children.ast_children_at;
     return node;}
 

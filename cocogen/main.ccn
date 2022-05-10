@@ -32,6 +32,7 @@ phase semantic {
 
     actions {
         buildSymbolTable;
+		buildRuleTable;
         checkExistance;
         unwrapSetExpr;
         reachability;
@@ -364,6 +365,12 @@ traversal buildSymbolTable {
     uid = BST
 };
 
+traversal buildRuleTable {
+    uid = BRT,
+
+	nodes = {ast, inode, rule}
+};
+
 traversal unwrapSetExpr {
     uid = USE,
     nodes = setexpr | {ast}
@@ -447,7 +454,8 @@ root node ast {
         inode inodes,
         inodeset inodesets,
         ienum enums,
-        ste stable
+        ste stable,
+		rte rtable
     },
     attributes {
         int num_traversals,
@@ -622,6 +630,13 @@ node ste {
         id key,
         link value { mandatory (buildSymbolTable -> )}
     }
+};
+
+node rte {
+	children {
+		rule rule,
+		rte next
+	}
 };
 
 enum attribute_type {
