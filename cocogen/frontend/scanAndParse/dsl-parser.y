@@ -656,7 +656,19 @@ rules: rule ',' rules
 
 rule: T_STRINGVAL
 	{
-		$$ = $1;
+		$$ = ASTrule($1);
+	}
+	| T_STRINGVAL T_ARROW T_STRINGVAL
+	{
+		$$ = ASTrule($1);
+		RULE_TYPE($$) = RT_rewrite;
+		RULE_RESULT($$) = $3;
+	}
+	| T_STRINGVAL '=' T_STRINGVAL
+	{
+		$$ = ASTrule($1);
+		RULE_TYPE($$) = RT_map;
+		RULE_RESULT($$) = $3;
 	}
 	;
 

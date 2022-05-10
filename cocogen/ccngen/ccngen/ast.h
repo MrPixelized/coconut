@@ -404,7 +404,7 @@ node_st *ASTsetliteral(node_st *reference);
 node_st *ASTsetreference();
 node_st *ASTste();
 node_st *ASTchild(node_st *name);
-node_st *ASTrule(char * pattern, char * result, enum rule_type type);
+node_st *ASTrule(char * pattern);
 node_st *ASTlifetime_range();
 node_st *ASTilifetime();
 node_st *ASTinodeset();

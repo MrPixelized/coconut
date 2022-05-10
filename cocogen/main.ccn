@@ -587,8 +587,8 @@ node rule {
 
 	attributes {
 		string pattern { constructor, mandatory },
-		string result { constructor },
-		rule_type type { constructor }
+		string result,
+		rule_type type
 	}
 };
 

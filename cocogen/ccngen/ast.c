@@ -125,14 +125,14 @@ node_st *ASTchild(node_st *name) {
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
-node_st *ASTrule(char * pattern, char * result, enum rule_type type) {
+node_st *ASTrule(char * pattern) {
     node_st *node = NewNode();
     node->data.N_rule = MEMmalloc(sizeof(struct NODE_DATA_RULE));
     NODE_TYPE(node) = NT_RULE;
     RULE_NEXT(node) = NULL;
     RULE_PATTERN(node) = pattern;
-    RULE_RESULT(node) = result;
-    RULE_TYPE(node) = type;
+    RULE_RESULT(node) = NULL;
+    RULE_TYPE(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
     NODE_CHILDREN(node) = node->data.N_rule->rule_children.rule_children_at;
     return node;}

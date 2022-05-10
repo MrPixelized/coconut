@@ -105,7 +105,7 @@ ccn_node *CPYchild(ccn_node *arg_node) {
 }
 
 ccn_node *CPYrule(ccn_node *arg_node) {
-    ccn_node *new_node =ASTrule(    NULL    ,     NULL    ,     0);
+    ccn_node *new_node =ASTrule(    NULL);
     CopyBaseNode(new_node, arg_node);
     RULE_NEXT(new_node) = TRAVopt(RULE_NEXT(arg_node));
     RULE_PATTERN(new_node) = STRcpy(RULE_PATTERN(arg_node));
