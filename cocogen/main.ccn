@@ -368,7 +368,7 @@ traversal buildSymbolTable {
 traversal buildRuleTable {
     uid = BRT,
 
-	nodes = {ast, inode, rule}
+	nodes = {ast, inode, rule, rte}
 };
 
 traversal unwrapSetExpr {
