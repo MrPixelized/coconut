@@ -268,6 +268,11 @@ node_st *CEXrule(node_st *node) {
     return node;
 }
 
+node_st *CEXrte(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 static char *preserved_enum_prefix[] = {"NT", "NS", "TRAV", "PASS", "CCN"};
 
 node_st *CEXienum(node_st *node) {

@@ -186,6 +186,11 @@ node_st *BSTste(node_st *node) {
     return node;
 }
 
+node_st *BSTrte(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *BSTsetoperation(node_st *node) {
     TRAVchildren(node);
     return node;
