@@ -158,14 +158,17 @@ node_st *DGCHTrule(node_st *node) {
     return node;
 }
 
-node_st *DGCHTste(node_st *node) {
+node_st *DGCHTrte(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
 
+node_st *DGCHTste(node_st *node) {
     TRAVchildren(node);
     return node;
 }
 
 node_st *DGCHTsetoperation(node_st *node) {
-
     TRAVchildren(node);
     return node;
 }

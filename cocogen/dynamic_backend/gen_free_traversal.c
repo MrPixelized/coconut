@@ -62,6 +62,11 @@ node_st *DGFTchild(node_st *node) { return node; }
 
 node_st *DGFTrule(node_st *node) { return node; }
 
+node_st *DGFTrte(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGFTattribute(node_st *node) {
     GeneratorContext *ctx = globals.gen_ctx;
     if (ATTRIBUTE_TYPE(node) == AT_string) {
@@ -73,25 +78,21 @@ node_st *DGFTattribute(node_st *node) {
 }
 
 node_st *DGFTste(node_st *node) {
-
     TRAVchildren(node);
     return node;
 }
 
 node_st *DGFTsetoperation(node_st *node) {
-
     TRAVchildren(node);
     return node;
 }
 
 node_st *DGFTsetliteral(node_st *node) {
-
     TRAVchildren(node);
     return node;
 }
 
 node_st *DGFTsetreference(node_st *node) {
-
     TRAVchildren(node);
     return node;
 }

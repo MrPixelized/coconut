@@ -103,6 +103,11 @@ node_st *DGCTrule(node_st *node) {
     return node;
 }
 
+node_st *DGCTrte(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGCTste(node_st *node) {
     TRAVchildren(node);
     return node;
