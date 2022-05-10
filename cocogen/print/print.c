@@ -137,6 +137,12 @@ node_st *PRTchild(node_st *node) {
     return node;
 }
 
+node_st *PRTrte(node_st *node) {
+    printf("RTE: ");
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *PRTrule(node_st *node) {
     PrintIndent();
     printf("%s", RULE_PATTERN(node));
