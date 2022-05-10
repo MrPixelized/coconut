@@ -138,7 +138,7 @@ node_st *PRTchild(node_st *node) {
 }
 
 node_st *PRTrte(node_st *node) {
-    printf("RTE: ");
+    printf("RTE: %s, ", ID_ORIG(RTE_TYPE(node)));
     TRAVchildren(node);
     return node;
 }
