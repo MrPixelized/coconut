@@ -1,0 +1,19 @@
+root node ast {
+    attributes {
+        int val {}
+    },
+
+	rules {
+		"ast({val})",
+		"ast({val: string})" -> "ast({atoi(val)})",
+		"bingo bongo" = "sooch man",
+		"new(ast)" = "ASTast()",
+		"ast({val: string})" -> "ast({atoi(val)})"
+	}
+};
+
+start phase dooo {
+    actions {
+        pass x;
+    }
+};
