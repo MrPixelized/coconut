@@ -32,7 +32,7 @@ phase semantic {
 
     actions {
         buildSymbolTable;
-		buildRuleTable;
+		constructRuleTable;
         checkExistance;
         unwrapSetExpr;
         reachability;
@@ -365,10 +365,33 @@ traversal buildSymbolTable {
     uid = BST
 };
 
+phase constructRuleTable {
+    info = "Build and manipulate the rule table for parsing",
+    uid = CRT,
+
+    actions {
+        buildRuleTable;
+		convertRawRules;
+		iterateRuleTable;
+    }
+};
+
 traversal buildRuleTable {
     uid = BRT,
 
-	nodes = {ast, inode, rule, rte}
+	nodes = {ast, inode, raw_rule, rte}
+};
+
+traversal convertRawRules {
+	uid = CRR,
+
+	nodes = {ast, rte, raw_rule}
+};
+
+traversal iterateRuleTable {
+    uid = IRT,
+
+	nodes = {ast, rte, rule}
 };
 
 traversal unwrapSetExpr {
@@ -588,14 +611,53 @@ enum rule_type {
 	}
 };
 
-node rule {
+// A raw rule just maps a plain user-specified string to another
+node raw_rule {
 	children {
-		rule next
+		raw_rule next
 	},
 
 	attributes {
 		string pattern { constructor, mandatory },
 		string result,
+		rule_type type
+	}
+};
+
+// Obtained from a plain pattern string:
+// "while {a}" -> "while $1"
+// "{a}" is represented as a field, representing its required type,
+// the index (1) and its name (a)
+node pattern {
+	children {
+		field fields
+	},
+
+	attributes {
+		string template,
+		string result
+	}
+};
+
+node field {
+	children {
+		field next
+	},
+
+	attributes {
+		string name, // name of the field in the corresponding output type
+		id type, 	 // type of the field in the corresponding output node
+		int index 	 // index in the pattern
+	}
+};
+
+// A rule is like a raw rule, but instead of raw strings it refers to
+// parsed patterns, you will only find this node as the direct child of
+// an RTE
+node rule {
+	attributes {
+		pattern pattern { constructor, mandatory },
+		pattern result,
 		rule_type type
 	}
 };
@@ -632,10 +694,17 @@ node ste {
     }
 };
 
+nodeset rte_rule = { rule, raw_rule };
+
 node rte {
 	children {
-		rule rule,
+		rte_rule rule,
 		rte next
+	},
+
+	attributes {
+		id type
+		//id type { mandatory (constructRuleTable -> )}
 	}
 };
 
