@@ -645,7 +645,7 @@ rulebody: T_RULES '{' rules '}'
 
 rules: rule ',' rules
 	{
-		RULE_NEXT($1) = $3;
+		RAW_RULE_NEXT($1) = $3;
 		$$ = $1;
 	}
 	| rule
@@ -656,19 +656,20 @@ rules: rule ',' rules
 
 rule: T_STRINGVAL
 	{
-		$$ = ASTrule($1);
-	}
-	| T_STRINGVAL T_ARROW T_STRINGVAL
-	{
-		$$ = ASTrule($1);
-		RULE_TYPE($$) = RT_rewrite;
-		RULE_RESULT($$) = $3;
+		$$ = ASTraw_rule($1);
+		RAW_RULE_TYPE($$) = RT_template;
 	}
 	| T_STRINGVAL '=' T_STRINGVAL
 	{
-		$$ = ASTrule($1);
-		RULE_TYPE($$) = RT_map;
-		RULE_RESULT($$) = $3;
+		$$ = ASTraw_rule($1);
+		RAW_RULE_TYPE($$) = RT_map;
+		RAW_RULE_RESULT($$) = $3;
+	}
+	| T_STRINGVAL T_ARROW T_STRINGVAL
+	{
+		$$ = ASTraw_rule($1);
+		RAW_RULE_TYPE($$) = RT_rewrite;
+		RAW_RULE_RESULT($$) = $3;
 	}
 	;
 
