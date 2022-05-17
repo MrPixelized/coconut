@@ -217,6 +217,21 @@ node_st *BSTrule(node_st *node) {
     return node;
 }
 
+node_st *BSTraw_rule(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *BSTfield(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *BSTpattern(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *BSTienum(node_st *node) {
     if (STlookup(first_ste, IENUM_NAME(node))) {
         struct ctinfo info;

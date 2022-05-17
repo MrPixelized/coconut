@@ -268,6 +268,21 @@ node_st *CEXrule(node_st *node) {
     return node;
 }
 
+node_st *CEXraw_rule(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *CEXfield(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *CEXpattern(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *CEXrte(node_st *node) {
     TRAVchildren(node);
     return node;

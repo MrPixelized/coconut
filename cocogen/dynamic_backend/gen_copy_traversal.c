@@ -103,6 +103,21 @@ node_st *DGCTrule(node_st *node) {
     return node;
 }
 
+node_st *DGCTraw_rule(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *DGCTfield(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *DGCTpattern(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGCTrte(node_st *node) {
     TRAVchildren(node);
     return node;

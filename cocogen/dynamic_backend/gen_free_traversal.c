@@ -61,6 +61,9 @@ node_st *DGFTinodeset(node_st *node) {
 node_st *DGFTchild(node_st *node) { return node; }
 
 node_st *DGFTrule(node_st *node) { return node; }
+node_st *DGFTraw_rule(node_st *node) { return node; }
+node_st *DGFTfield(node_st *node) { return node; }
+node_st *DGFTpattern(node_st *node) { return node; }
 
 node_st *DGFTrte(node_st *node) {
     TRAVchildren(node);

@@ -14,8 +14,8 @@ ADD_FLEX_BISON_DEPENDENCY(DslTokens DslParser)
 
 add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
         ${COCONUT_FILES} print/print.c frontend/buildsymboltable.c frontend/check_existance.c
-        frontend/unwrap_setexpr.c frontend/rules/buildruletable.c dynamic_backend/gen_node_structs.c
-        ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} gen_helpers/format.c dynamic_backend/gen_node_macros.c
+        frontend/unwrap_setexpr.c frontend/rules/buildruletable.c frontend/rules/convertrawrules.c frontend/rules/iterateruletable.c
+		dynamic_backend/gen_node_structs.c ${FLEX_DslTokens_OUTPUTS} ${BISON_DslParser_OUTPUTS} gen_helpers/format.c dynamic_backend/gen_node_macros.c
         dynamic_backend/gen_node_init_funcs.c dynamic_backend/gen_node_base_and_union.c dynamic_backend/gen_node_constructor.c
         dynamic_backend/gen_enums.c dynamic_backend/gen_enum_values.c dynamic_backend/gen_trav_v_table.c dynamic_backend/gen_node_trav_table.c
         dynamic_backend/gen_pass_table.c dynamic_backend/gen_trav_table.c dynamic_backend/gen_system_traversals.c dynamic_backend/gen_action_header.c

@@ -158,6 +158,21 @@ node_st *DGCHTrule(node_st *node) {
     return node;
 }
 
+node_st *DGCHTfield(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *DGCHTraw_rule(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
+node_st *DGCHTpattern(node_st *node) {
+    TRAVchildren(node);
+    return node;
+}
+
 node_st *DGCHTrte(node_st *node) {
     TRAVchildren(node);
     return node;
