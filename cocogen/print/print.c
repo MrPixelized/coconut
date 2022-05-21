@@ -189,7 +189,11 @@ node_st *PRTrule(node_st *node) {
 // TODO: include type
 node_st *PRTfield(node_st *node) {
     PrintIndent();
-    printf("%i: %s\n", FIELD_INDEX(node), FIELD_NAME(node));
+    if (FIELD_TYPE(node))
+        printf("%i: %s: %s\n", FIELD_INDEX(node), FIELD_NAME(node),
+               ID_ORIG(FIELD_TYPE(node)));
+    else
+        printf("%i: %s\n", FIELD_INDEX(node), FIELD_NAME(node));
 
     TRAVopt(FIELD_NEXT(node));
     return node;
