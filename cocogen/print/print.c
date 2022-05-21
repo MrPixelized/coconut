@@ -138,15 +138,15 @@ node_st *PRTchild(node_st *node) {
 }
 
 node_st *PRTrte(node_st *node) {
-    printf("RTE: %s, ", ID_ORIG(RTE_TYPE(node)));
+    printf("RTE: %s\n", ID_ORIG(RTE_TYPE(node)));
     TRAVchildren(node);
     return node;
 }
 
-node_st *PRTrule(node_st *node) {
-    PrintIndent();
-    printf("%s", RULE_PATTERN(node));
-    switch (RULE_TYPE(node)) {
+// TODO: condense duplicate code
+node_st *PRTraw_rule(node_st *node) {
+    printf(", %s", RAW_RULE_PATTERN(node));
+    switch (RAW_RULE_TYPE(node)) {
     case RT_NULL:
     case RT_template:
         printf("\n");
@@ -158,9 +158,52 @@ node_st *PRTrule(node_st *node) {
         printf(" = ");
         break;
     }
-    if (RULE_RESULT(node) != NULL)
-        printf("%s\n", RULE_PATTERN(node));
-    TRAVopt(RULE_NEXT(node));
+    if (RAW_RULE_RESULT(node) != NULL)
+        printf("%s\n", RAW_RULE_PATTERN(node));
+    TRAVopt(RAW_RULE_NEXT(node));
+    return node;
+}
+
+node_st *PRTrule(node_st *node) {
+    PrintIndent();
+    INDENT;
+    TRAVopt(RULE_PATTERN(node));
+    PrintIndent();
+    switch (RULE_TYPE(node)) {
+    case RT_NULL:
+    case RT_template:
+        printf("\n");
+        break;
+    case RT_rewrite:
+        printf("->\n");
+        break;
+    case RT_map:
+        printf("=\n");
+        break;
+    }
+    TRAVopt(RULE_RESULT(node));
+    UNINDENT;
+    return node;
+}
+
+// TODO: include type
+node_st *PRTfield(node_st *node) {
+    PrintIndent();
+    printf("%i: %s\n", FIELD_INDEX(node), FIELD_NAME(node));
+
+    TRAVopt(FIELD_NEXT(node));
+    return node;
+}
+
+node_st *PRTpattern(node_st *node) {
+    PrintIndent();
+    if (PATTERN_TEMPLATE(node))
+        printf("%s\n", PATTERN_TEMPLATE(node));
+    else
+        printf("\n");
+    INDENT;
+    TRAVopt(PATTERN_FIELDS(node));
+    UNINDENT;
     return node;
 }
 
