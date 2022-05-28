@@ -32,18 +32,21 @@ node_st *BRTast(node_st *node) {
 
     TRAVchildren(node);
 
+    if (!RTE_TYPE(AST_RTABLE(node)))
+        AST_RTABLE(node) = NULL;
+
     return node;
 }
 
-node_st *BRTrule(node_st *node) {
+node_st *BRTraw_rule(node_st *node) {
     RTE_RULE(last_rte) = node;
     RTE_TYPE(last_rte) = CCNcopy(INODE_NAME(curr_node));
 
-    if (RULE_NEXT(node) || INODE_NEXT(curr_node)) {
+    if (RAW_RULE_NEXT(node) || INODE_NEXT(curr_node)) {
         RTE_NEXT(last_rte) = ASTrte();
         last_rte = RTE_NEXT(last_rte);
         TRAVchildren(node);
-        RULE_NEXT(node) = NULL;
+        RAW_RULE_NEXT(node) = NULL;
     }
 
     return node;

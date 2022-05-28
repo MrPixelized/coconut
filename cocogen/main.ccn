@@ -549,7 +549,7 @@ node inode {
         inode next,
         child ichildren,
         attribute iattributes,
-		rule irules,
+		raw_rule irules,
         ilifetime lifetimes
     },
 
@@ -634,8 +634,7 @@ node pattern {
 	},
 
 	attributes {
-		string template,
-		string result
+		string template
 	}
 };
 
@@ -645,9 +644,11 @@ node field {
 	},
 
 	attributes {
-		string name, // name of the field in the corresponding output type
-		id type, 	 // type of the field in the corresponding output node
-		int index 	 // index in the pattern
+		string name, 			  // name of the field in the corresponding output type
+		id node_type, 			  // type of the field in the corresponding output node
+		attribute_type attr_type, // type of the field in the corresponding output node
+		bool is_attribute, 		  // whether this field is an attribute or a child
+		int index 	 			  // index in the pattern
 	}
 };
 
