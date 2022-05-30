@@ -186,7 +186,6 @@ node_st *PRTrule(node_st *node) {
     return node;
 }
 
-// TODO: include type
 node_st *PRTfield(node_st *node) {
     PrintIndent();
     if (!FIELD_IS_ATTRIBUTE(node) && FIELD_NODE_TYPE(node))
