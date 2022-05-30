@@ -29,8 +29,10 @@ node_st *CRRast(node_st *node) {
     first = AST_RTABLE(node);
     last = AST_RTABLE(node);
     ste = AST_STABLE(node);
-    while (RTE_NEXT(last))
+    while (last && RTE_NEXT(last))
         last = RTE_NEXT(last);
+
+    CCNshorthand("hi, %s, you're %i years old & %f\\% of a man", "tim", 3, .4);
 
     // Keep iterating over the table and rewrite every raw string to a
     // pattern

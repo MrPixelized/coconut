@@ -23,7 +23,7 @@ static node_st *type = NULL;  // node corresponding to the return type of the
                               // current rule table entry
 
 bool rtable_is_map(node_st *rte) {
-    while (RTE_NEXT(rte)) {
+    while (rte && RTE_NEXT(rte)) {
         if (RULE_TYPE(RTE_RULE(rte)) != RT_map)
             return false;
         rte = RTE_NEXT(rte);
@@ -37,7 +37,7 @@ node_st *IRTast(node_st *node) {
     first = AST_RTABLE(node);
     last = AST_RTABLE(node);
     ste = AST_STABLE(node);
-    while (RTE_NEXT(last))
+    while (last && RTE_NEXT(last))
         last = RTE_NEXT(last);
 
     // Keep iterating over the table until all rules are of type "map"
