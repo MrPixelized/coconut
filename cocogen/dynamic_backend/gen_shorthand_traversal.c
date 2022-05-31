@@ -10,6 +10,9 @@
 
 GeneratorContext *ctx;
 
+static int rule_count = 0;
+node_st *rte;
+
 node_st *DGSHTast(node_st *node) {
     ctx = globals.gen_ctx;
     GNopenIncludeFile(ctx, "shorthand.h");
@@ -17,40 +20,55 @@ node_st *DGSHTast(node_st *node) {
     // Include necessary files
     OUT("#include <regex.h>\n\n");
 
-    // Generate the regular expression used for the recursive parsing function
-    OUT("static regex_t regex_sh;\n");
-    OUT("const char *expression =\n");
-    GNindentIncrease(ctx);
+    // Write a function to take a rule and its parameters and output the node
+    OUT_START_FUNC("struct ccn_node *SHrunrule(int r)");
     {
-        if (AST_RTABLE(node))
-            TRAVdo(AST_RTABLE(node));
-        else
-            OUT("\"\";\n");
-    }
-    GNindentDecrease(ctx);
-    OUT("\n");
+        OUT_BEGIN_SWITCH("r");
+        {
+            rte = AST_RTABLE(node);
+            while (rte) {
+                OUT_BEGIN_CASE("%i", rule_count++);
+                {
+                    OUT("printf(\"%s\\n\");\n",
+                        PATTERN_TEMPLATE(RULE_RESULT(RTE_RULE(rte))));
+                }
+                OUT_END_CASE();
 
-    OUT_START_FUNC("void __attribute__ ((constructor)) regex_sh_compile()");
-    { OUT("regcomp(&regex_sh, expression, REG_EXTENDED | REG_NEWLINE);\n"); }
+                rte = RTE_NEXT(rte);
+            }
+        }
+        OUT_END_SWITCH();
+        OUT("return NULL;\n");
+    }
     OUT_END_FUNC();
 
-    return node;
-}
+    // Generate the regular expression used for the recursive parsing function
+    OUT("const char *expressions[%i] = {\n", rule_count);
+    GNindentIncrease(ctx);
+    {
+        rte = AST_RTABLE(node);
+        while (rte) {
+            // Add the rule to the list of regular expressions
+            OUT("\"%s\",\n", PATTERN_TEMPLATE(RULE_PATTERN(RTE_RULE(rte))));
+            rte = RTE_NEXT(rte);
+        }
+    }
+    GNindentDecrease(ctx);
+    OUT("};\n\n");
 
-node_st *DGSHTrte(node_st *node) {
-    // Add the regular expression as a group
-    OUT("\"(%s)\"", PATTERN_TEMPLATE(RULE_PATTERN(RTE_RULE(node))));
-
-    // Terminate it with "next regular expression" or "end"
-    if (RTE_NEXT(node))
-        OUT_NO_INDENT(" \"|\"");
-    else
-        OUT_NO_INDENT(";");
-
+    // Save the amount of groups in the regex
+    OUT("const int rules_sh = %i;\n", rule_count);
+    OUT("static regex_t regex_sh[%i];\n", rule_count);
     OUT("\n");
 
-    // Go to the next rule in the table
-    TRAVopt(RTE_NEXT(node));
+    // Compile the regular expression before main()
+    OUT_START_FUNC("void __attribute__ ((constructor)) regex_sh_compile()");
+    {
+        OUT("for (int i = 0; i < rules_sh; i++)\n");
+        OUT("\tregcomp(&regex_sh[i], expressions[i], REG_EXTENDED | "
+            "REG_NEWLINE);\n");
+    }
+    OUT_END_FUNC();
 
     return node;
 }
