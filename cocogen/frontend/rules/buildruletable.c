@@ -20,6 +20,10 @@ static node_st *curr_node = NULL;
 node_st *BRTinode(node_st *node) {
     curr_node = node;
 
+    if (INODE_IRULES(node) && last_rte != first_rte) {
+        RTE_NEXT(last_rte) = ASTrte();
+        last_rte = RTE_NEXT(last_rte);
+    }
     TRAVopt(INODE_IRULES(node));
     TRAVopt(INODE_NEXT(node));
     return node;
@@ -39,13 +43,13 @@ node_st *BRTast(node_st *node) {
 }
 
 node_st *BRTraw_rule(node_st *node) {
-    RTE_RULE(last_rte) = node;
+    RTE_RULE(last_rte) = CCNcopy(node);
     RTE_TYPE(last_rte) = CCNcopy(INODE_NAME(curr_node));
 
-    if (RAW_RULE_NEXT(node) || INODE_NEXT(curr_node)) {
+    if (RAW_RULE_NEXT(node)) {
         RTE_NEXT(last_rte) = ASTrte();
         last_rte = RTE_NEXT(last_rte);
-        TRAVchildren(node);
+        TRAVdo(RAW_RULE_NEXT(node));
         RAW_RULE_NEXT(node) = NULL;
     }
 

@@ -33,6 +33,10 @@ node_st *CRRast(node_st *node) {
         last = RTE_NEXT(last);
 
     CCNshorthand("hi, %s, you're %i years old & %f\\% of a man", "tim", 3, .4);
+    CCNshorthand("soupkip test test test brompel");
+    CCNshorthand("soupkip RTE: rule, next brompel");
+    CCNshorthand("soupkip small dog test test test RTE: rule, next brompel");
+    CCNshorthand("soupkip test test test small dog RTE: rule, next brompel");
 
     // Keep iterating over the table and rewrite every raw string to a
     // pattern
@@ -44,7 +48,8 @@ node_st *CRRast(node_st *node) {
 node_st *CRRrte(node_st *node) {
     type = STlookup(ste, RTE_TYPE(node));
 
-    TRAVchildren(node);
+    TRAVopt(RTE_RULE(node));
+    TRAVopt(RTE_NEXT(node));
     return node;
 }
 
@@ -92,5 +97,6 @@ node_st *CRRraw_rule(node_st *node) {
     RULE_RESULT(rule) = result;
     RULE_TYPE(rule) = RAW_RULE_TYPE(node);
 
+    *node = *rule;
     return rule;
 }

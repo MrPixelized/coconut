@@ -5,6 +5,7 @@
  * to a map rule
  */
 
+#define _GNU_SOURCE
 #include "ccn/dynamic_core.h"
 #include "ccngen/ast.h"
 #include "frontend/symboltable.h"
@@ -14,6 +15,7 @@
 #include "palm/str.h"
 #include "stdbool.h"
 #include <stddef.h>
+#include <stdio.h>
 
 static node_st *ste = NULL;   // symbol table
 static node_st *first = NULL; // first rule table entry
@@ -56,14 +58,34 @@ node_st *IRTrte(node_st *node) {
 }
 
 node_st *IRTrule(node_st *node) {
+    char *result;
+    node_st *field;
+
     switch (RULE_TYPE(node)) {
     case RT_template:
         // If this is a template rule, remap the placeholders to an actual
         // C expression -> a map rule
-        PATTERN_TEMPLATE(RULE_RESULT(node)) = STRcpy(ID_LWR(INODE_NAME(type)));
+        field = PATTERN_FIELDS(RULE_PATTERN(node));
+
+        // TODO: make ordering in constructor correct
+        asprintf(&result, "AST%s(", ID_LWR(INODE_NAME(type)));
+
+        while (field) {
+            asprintf(&result, "%s%s", result, FIELD_NAME(field));
+            if (FIELD_NEXT(field))
+                asprintf(&result, "%s, ", result);
+
+            field = FIELD_NEXT(field);
+        }
+
+        asprintf(&result, "%s)", result);
+
+        // Assign the generated C code to the node
+        PATTERN_TEMPLATE(RULE_RESULT(node)) = result;
         RULE_TYPE(node) = RT_map;
         return node;
     case RT_rewrite:
+        // TODO
         // If this is a rewrite rule, match for the rule pattern in the
         // current rule table (first) and rewrite the 'result' to match
         RULE_TYPE(node) = RT_map;
