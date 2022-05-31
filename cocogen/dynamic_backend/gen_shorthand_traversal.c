@@ -20,8 +20,25 @@ node_st *DGSHTast(node_st *node) {
     // Include necessary files
     OUT("#include <regex.h>\n\n");
 
-    // Write a function to take a rule and its parameters and output the node
-    OUT_START_FUNC("struct ccn_node *SHrunrule(int r)");
+    // Create a struct for dynamic parameters (also used by copra)
+    OUT_STRUCT("shorthand_arg");
+    {
+        OUT_UNION("");
+        {
+            OUT_FIELD("int i");
+            OUT_FIELD("double f");
+            OUT_FIELD("bool b");
+            OUT_FIELD("char *s");
+        }
+        OUT_STRUCT_END();
+
+        OUT_FIELD("struct shorthand_arg *next");
+    }
+    OUT_STRUCT_END();
+
+    // Write a function to take a rule and its parameters and output the
+    // node
+    OUT_START_FUNC("node_st *SHrunrule(int r, struct shorthand_arg *args)");
     {
         OUT_BEGIN_SWITCH("r");
         {
@@ -42,7 +59,8 @@ node_st *DGSHTast(node_st *node) {
     }
     OUT_END_FUNC();
 
-    // Generate the regular expression used for the recursive parsing function
+    // Generate the regular expression used for the recursive parsing
+    // function
     OUT("const char *expressions[%i] = {\n", rule_count);
     GNindentIncrease(ctx);
     {

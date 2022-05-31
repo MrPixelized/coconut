@@ -12,17 +12,6 @@
 #include "palm/memory.h"
 #include "palm/str.h"
 
-struct shorthand_arg {
-    union {
-        int i;
-        double f;
-        bool b;
-        char *s;
-    };
-
-    struct shorthand_arg *next;
-};
-
 static ccn_trav_st *current_traversal;
 
 void TRAVdataNOP(ccn_trav_st *trav) {
