@@ -161,30 +161,47 @@ int CCNpatternnext(char *pattern) {
 
 struct ccn_node *CCNparsepattern(char *pattern, struct shorthand_arg *args) {
     struct shorthand_arg *arg = args;
+    regmatch_t match; // Regex match of the rule
+    int r;            // Rule number
 
-    // Find consecutive indices of pattern placeholders
-    int i = 0;
-    char *remainder = pattern;
-    while ((i = CCNpatternnext(remainder))) {
-        remainder = &remainder[i];
+    // Loop over all generated regex rules until one is found in the pattern
+    for (r = 0; r < rules_sh; r++) {
+        if (regexec(&regex_sh[r], pattern, 1, &match, 0))
+            continue;
 
-        switch (*remainder) {
-        case 'i':
-            printf("int %i\n", arg->i);
-            break;
-        case 'f':
-            printf("float %f\n", arg->f);
-            break;
-        case 'b':
-            printf("bool %d\n", arg->b);
-            break;
-        case 's':
-            printf("string %s\n", arg->s);
-            break;
-        }
+        char *matched_match =
+            STRsubStr(pattern, match.rm_so, match.rm_eo - match.rm_so);
+        printf("Rule %i: [%u - %u]: %s\n", r, match.rm_so, match.rm_eo,
+               matched_match);
 
-        arg = arg->next;
+        break;
     }
+
+    // If r == rules_sh, no pattern was matched, otherwise, r is the rule number
+
+    // // Find consecutive indices of pattern placeholders
+    // int i = 0;
+    // char *remainder = pattern;
+    // while ((i = CCNpatternnext(remainder))) {
+    //     remainder = &remainder[i];
+
+    //     switch (*remainder) {
+    //     case 'i':
+    //         printf("int %i\n", arg->i);
+    //         break;
+    //     case 'f':
+    //         printf("float %f\n", arg->f);
+    //         break;
+    //     case 'b':
+    //         printf("bool %d\n", arg->b);
+    //         break;
+    //     case 's':
+    //         printf("string %s\n", arg->s);
+    //         break;
+    //     }
+
+    //     arg = arg->next;
+    // }
 
     return NULL;
 }
