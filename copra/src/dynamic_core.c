@@ -149,50 +149,84 @@ int CCNpatternnext(char *pattern) {
 }
 
 struct ccn_node *CCNparsepattern(char *pattern, struct shorthand_arg *args) {
-    struct shorthand_arg *arg = args;
-    regmatch_t match; // Regex match of the rule
-    int r;            // Rule number
+    struct shorthand_arg *arg = args;    // Copy of args to not lose head
+    struct shorthand_arg *rrargs = NULL; // Args for single node generator
+    struct shorthand_arg *larg = NULL;   // Tail of regular args
+    regmatch_t match;                    // Regex match of the rule
+    int r;                               // Rule number
+    int i = 0;                           // Index of placeholder in pattern
+    int offset = 0;                      // Index of placeholder irt previous
+    char *remainder = pattern;           // Pattern from index i onward
+
+    /*       rrargs
+     *         V
+     * a %n b %n c %n d %n e
+     *       |         |         "%n c %n d" is matched, those two args are
+     *       |         |         represented by rrargs
+     * a %n b    %n     %n e
+     *    ^
+     *  larg                     larg is the last arg before the removed args,
+     *                           in the new shorthand_arg chain with the newly
+     *                           inserted single %n
+     */
 
     // Loop over all generated regex rules until one is found in the pattern
     for (r = 0; r < rules_sh; r++) {
-        if (regexec(&regex_sh[r], pattern, 1, &match, 0))
-            continue;
-
-        char *matched_match =
-            STRsubStr(pattern, match.rm_so, match.rm_eo - match.rm_so);
-        printf("Rule %i: [%u - %u]: %s\n", r, match.rm_so, match.rm_eo,
-               matched_match);
-
-        break;
+        if (!regexec(&regex_sh[r], pattern, 1, &match, 0))
+            break;
     }
 
-    // If r == rules_sh, no pattern was matched, otherwise, r is the rule number
+    // If no new rules can be applied, return the generated node
+    if (r == rules_sh) {
+        if (!args) {
+            printf("Returning NULL\n\n");
+            return NULL;
+        }
 
-    // // Find consecutive indices of pattern placeholders
-    // int i = 0;
-    // char *remainder = pattern;
-    // while ((i = CCNpatternnext(remainder))) {
-    //     remainder = &remainder[i];
+        printf("Returning Something\n\n");
+        return args->n;
+    }
 
-    //     switch (*remainder) {
-    //     case 'i':
-    //         printf("int %i\n", arg->i);
-    //         break;
-    //     case 'f':
-    //         printf("float %f\n", arg->f);
-    //         break;
-    //     case 'b':
-    //         printf("bool %d\n", arg->b);
-    //         break;
-    //     case 's':
-    //         printf("string %s\n", arg->s);
-    //         break;
-    //     }
+    // Loop over the placeholders in the pattern, removing shadowed placeholders
+    // from the argument list and storing them for a call to SHrunrule
+    while ((offset = CCNpatternnext(remainder))) {
+        remainder += offset;
+        i += offset;
 
-    //     arg = arg->next;
-    // }
+        if (i < match.rm_so) {
+            larg = arg;
+        } else if (i < match.rm_eo) {
+            if (!rrargs)
+                rrargs = arg;
+            if (larg)
+                larg->next = arg->next;
+        } else {
+            break;
+        }
 
-    return NULL;
+        arg = arg->next;
+    }
+
+    // Add the newly generated node into the argument list
+    struct shorthand_arg *new_node = MEMmalloc(sizeof(struct shorthand_arg));
+    new_node->n = SHrunrule(r, rrargs);
+    if (larg) {
+        new_node->next = larg->next;
+        larg->next = new_node;
+    } else {
+        args = new_node;
+    }
+
+    // Print some status ifo
+    printf("Pattern: %s -> Rule %i: [%u - %u]: %s\n", pattern, r, match.rm_so,
+           match.rm_eo,
+           STRsubStr(pattern, match.rm_so, match.rm_eo - match.rm_so));
+
+    // Replace the matched part of the language with %n
+    pattern =
+        STRsubstSlice(pattern, match.rm_so, match.rm_eo - match.rm_so, "%n");
+
+    return CCNparsepattern(pattern, args);
 }
 
 struct ccn_node *CCNshorthand(char *pattern, ...) {
@@ -204,10 +238,10 @@ struct ccn_node *CCNshorthand(char *pattern, ...) {
     va_start(args, pattern);
 
     // Find consecutive indices of pattern placeholders
-    int i = 0;
+    int offset = 0;
     char *remainder = pattern;
-    while ((i = CCNpatternnext(remainder))) {
-        remainder = &remainder[i];
+    while ((offset = CCNpatternnext(remainder))) {
+        remainder = remainder + offset;
 
         if (!head) {
             head = MEMmalloc(sizeof(struct shorthand_arg));
@@ -230,6 +264,9 @@ struct ccn_node *CCNshorthand(char *pattern, ...) {
             break;
         case 's':
             node->s = va_arg(args, char *);
+            break;
+        case 'n':
+            node->n = va_arg(args, node_st *);
             break;
         }
     }
