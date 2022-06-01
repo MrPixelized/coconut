@@ -38,7 +38,7 @@ node_st *RTTRrule(node_st *node) {
 
         // Find the shorthand type specifier for this field
         if (!FIELD_IS_ATTRIBUTE(field))
-            type = "%%n";
+            type = "%n";
         else
             switch (FIELD_ATTR_TYPE(field)) {
             case AT_int:

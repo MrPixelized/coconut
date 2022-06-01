@@ -46,7 +46,7 @@ add_executable(cocogen main.c commandline.c frontend/scanAndParse/scan_parse.c
 	dynamic_backend/gen_shorthand_traversal.c frontend/symboltable.h
 	frontend/lifetimes/check_lifetimes.c generator/generator.c
 	generator/generator.h ${FILES} gen_helpers.h frontend/rules/rules.c
-	frontend/rules/rules.h)
+	frontend/rules/rules.h frontend/rules/ruletemplatestoregex.c)
 
 target_compile_options(cocogen PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
