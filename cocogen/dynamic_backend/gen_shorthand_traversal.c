@@ -12,6 +12,7 @@ GeneratorContext *ctx;
 
 static int rule_count = 0;
 node_st *rte;
+node_st *field;
 
 node_st *DGSHTast(node_st *node) {
     ctx = globals.gen_ctx;
@@ -29,6 +30,7 @@ node_st *DGSHTast(node_st *node) {
             OUT_FIELD("double f");
             OUT_FIELD("bool b");
             OUT_FIELD("char *s");
+            OUT_FIELD("node_st *n");
         }
         OUT_STRUCT_END();
 
@@ -46,8 +48,43 @@ node_st *DGSHTast(node_st *node) {
             while (rte) {
                 OUT_BEGIN_CASE("%i", rule_count++);
                 {
-                    OUT("printf(\"%s\\n\");\n",
-                        PATTERN_TEMPLATE(RULE_RESULT(RTE_RULE(rte))));
+                    OUT("{\n");
+                    GNindentIncrease(ctx);
+
+                    field = PATTERN_FIELDS(RULE_PATTERN(RTE_RULE(rte)));
+
+                    while (field) {
+                        if (!FIELD_IS_ATTRIBUTE(field))
+                            OUT("node_st *%s = args->n;\n", FIELD_NAME(field));
+                        else
+                            switch (FIELD_ATTR_TYPE(field)) {
+                            case AT_int:
+                                OUT("int %s = args->i;\n", FIELD_NAME(field));
+                                break;
+                            case AT_float:
+                            case AT_double:
+                                OUT("float %s = args->f;\n", FIELD_NAME(field));
+                                break;
+                            case AT_bool:
+                                OUT("bool %s = args->b;\n", FIELD_NAME(field));
+                                break;
+                            case AT_string:
+                                OUT("char *%s = args->s;\n", FIELD_NAME(field));
+                                break;
+                            default:
+                                continue;
+                            }
+                        OUT("args = args->next;\n");
+
+                        field = FIELD_NEXT(field);
+                    }
+
+                    OUT("node_st *node = NULL;\n");
+                    OUT("%s;\n", PATTERN_TEMPLATE(RULE_RESULT(RTE_RULE(rte))));
+                    OUT("return node;\n");
+
+                    GNindentDecrease(ctx);
+                    OUT("}\n");
                 }
                 OUT_END_CASE();
 
