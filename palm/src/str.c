@@ -19,8 +19,7 @@
  *
  *******************************************************************************/
 
-char *STRcpy(const char *source)
-{
+char *STRcpy(const char *source) {
     char *ret;
 
     if (source != NULL) {
@@ -45,8 +44,7 @@ char *STRcpy(const char *source)
  *
  *******************************************************************************/
 
-char *STRncpy(const char *source, int maxlen)
-{
+char *STRncpy(const char *source, int maxlen) {
     char *ret;
     int max;
 
@@ -76,8 +74,7 @@ char *STRncpy(const char *source, int maxlen)
  *        if len is <0 then len is relative to the length of the string.
  *
  *****************************************************************************/
-char *STRsubStr(const char *string, int start, int len)
-{
+char *STRsubStr(const char *string, int start, int len) {
     int strlen = 0;
     char *ret = NULL;
 
@@ -95,8 +92,8 @@ char *STRsubStr(const char *string, int start, int len)
         ret = STRnull();
     } else {
         ret = memcpy(MEMmalloc(sizeof(char) * (len + 1)),
-            string + start, /* move to start of sub string */
-            len);
+                     string + start, /* move to start of sub string */
+                     len);
         ret[len] = '\0';
     }
 
@@ -110,8 +107,7 @@ char *STRsubStr(const char *string, int start, int len)
  * @brief return an allocated empty string
  *
  *****************************************************************************/
-char *STRnull()
-{
+char *STRnull() {
     char *ret = NULL;
 
     ret = MEMmalloc(sizeof(char) * 1);
@@ -131,8 +127,7 @@ char *STRnull()
  *
  *******************************************************************************/
 
-char *STRcat(const char *first, const char *second)
-{
+char *STRcat(const char *first, const char *second) {
     char *result;
 
     if (first == NULL) {
@@ -160,8 +155,7 @@ char *STRcat(const char *first, const char *second)
  *
  *******************************************************************************/
 
-char *STRcatn(int n, ...)
-{
+char *STRcatn(int n, ...) {
     int i;
     int length;
     char *result;
@@ -216,8 +210,7 @@ char *STRcatn(int n, ...)
  *
  *******************************************************************************/
 
-bool STReq(const char *first, const char *second)
-{
+bool STReq(const char *first, const char *second) {
     bool res;
 
     if ((first == NULL) && (second == NULL)) {
@@ -243,8 +236,7 @@ bool STReq(const char *first, const char *second)
  *
  *******************************************************************************/
 
-bool STReqci(const char *first, const char *second)
-{
+bool STReqci(const char *first, const char *second) {
     bool res;
     int i;
 
@@ -254,8 +246,8 @@ bool STReqci(const char *first, const char *second)
         res = false;
     } else {
         i = 0;
-        while ((first[i] != '\0') && (second[i] != '\0')
-            && (tolower(first[i]) == tolower(second[i]))) {
+        while ((first[i] != '\0') && (second[i] != '\0') &&
+               (tolower(first[i]) == tolower(second[i]))) {
             i += 1;
         }
         if ((first[i] == '\0') && (second[i] == '\0')) {
@@ -276,11 +268,11 @@ bool STReqci(const char *first, const char *second)
  * @param second, second string to compare
  * @param n, number of relevant characters
  *
- * @return: true when the relevant prefixes of strings are equal, false otherwise.
+ * @return: true when the relevant prefixes of strings are equal, false
+ *otherwise.
  *******************************************************************************/
 
-bool STReqn(const char *first, const char *second, int n)
-{
+bool STReqn(const char *first, const char *second, int n) {
     bool res;
 
     if ((first == NULL) && (second == NULL)) {
@@ -310,8 +302,7 @@ bool STReqn(const char *first, const char *second, int n)
  *
  *******************************************************************************/
 
-bool STRprefix(const char *prefix, const char *str)
-{
+bool STRprefix(const char *prefix, const char *str) {
     bool res;
 
     if (prefix == NULL) {
@@ -340,8 +331,7 @@ bool STRprefix(const char *prefix, const char *str)
  * @brief return true if suffix is the end of str, else return false.
  *
  *****************************************************************************/
-bool STRsuffix(const char *suffix, const char *str)
-{
+bool STRsuffix(const char *suffix, const char *str) {
     bool res = false;
 
     if (STRlen(suffix) > STRlen(str)) {
@@ -364,8 +354,7 @@ bool STRsuffix(const char *suffix, const char *str)
  * @return true when sub is a substring of str, false otherwise
  *******************************************************************************/
 
-bool STRsub(const char *sub, const char *str)
-{
+bool STRsub(const char *sub, const char *str) {
     bool res;
 
     if (sub == NULL) {
@@ -390,8 +379,7 @@ bool STRsub(const char *sub, const char *str)
  *
  *******************************************************************************/
 
-int STRlen(const char *s)
-{
+int STRlen(const char *s) {
     int len;
 
     if (s == NULL) {
@@ -403,9 +391,7 @@ int STRlen(const char *s)
     return len;
 }
 
-
-static bool CharInString(char c, const char *str)
-{
+static bool CharInString(char c, const char *str) {
     int i;
     bool res;
 
@@ -422,23 +408,21 @@ static bool CharInString(char c, const char *str)
     return res;
 }
 
-
 /*******************************************************************************
  *
  * @brief Tokenize string. On first call the str will be copied to internal
  *        static variable, next calls str should be NULL. With last call the
  *        allocated memory of the copy will be freed.
  *
- *              In contrast to strtok, STRtok leaves the argument string untouched
- *              and always allocates the tokens in fresh memory.
+ *              In contrast to strtok, STRtok leaves the argument string
+ *untouched and always allocates the tokens in fresh memory.
  *
  * @param str string to tokenize
  * @param tok tokenizer
  *
  * @return either a pointer to the next token or NULL when no more tokens.
  *******************************************************************************/
-char *STRtok(const char *first, const char *sep)
-{
+char *STRtok(const char *first, const char *sep) {
     static char *keep_string = NULL;
     static char *current = NULL;
     char *ret;
@@ -484,8 +468,7 @@ char *STRtok(const char *first, const char *sep)
  *
  *******************************************************************************/
 
-char *STRonNull(char *alt, char *str)
-{
+char *STRonNull(char *alt, char *str) {
     char *res;
 
     if (str == NULL) {
@@ -507,8 +490,7 @@ char *STRonNull(char *alt, char *str)
  *
  *******************************************************************************/
 
-char *STRitoa(int number)
-{
+char *STRitoa(int number) {
     char *str;
     int num;
 
@@ -519,6 +501,14 @@ char *STRitoa(int number)
     return str;
 }
 
+char *STRsubstSlice(const char *str, int start, int len, const char *subst) {
+    char *first = STRncpy(str, start);
+
+    return STRcatn(3, first, subst, str + start + len);
+}
+
+// char *STRsubstSlice(const char *str) { return str; }
+
 /** <!-- ****************************************************************** -->
  * @brief Substitute all occurrences of token in str with subst
  *
@@ -528,8 +518,7 @@ char *STRitoa(int number)
  *
  * @return A new String or NULL if str is NULL
  ******************************************************************************/
-char *STRsubstToken(const char *str, const char *token, const char *subst)
-{
+char *STRsubstToken(const char *str, const char *token, const char *subst) {
     int occurrences, tlen, slen;
     const char *found;
     char *pos;
@@ -547,7 +536,9 @@ char *STRsubstToken(const char *str, const char *token, const char *subst)
     }
 
     /* Make substitutions */
-    result = MEMmalloc((STRlen(str) + (occurrences * (STRlen(subst) - tlen)) + 1) * sizeof(char));
+    result =
+        MEMmalloc((STRlen(str) + (occurrences * (STRlen(subst) - tlen)) + 1) *
+                  sizeof(char));
 
     pos = result;
     while (*str != '\0') {
@@ -568,8 +559,7 @@ char *STRsubstToken(const char *str, const char *token, const char *subst)
  * Convert string to lower string by consuming the string.
  * @param str the string to convert to lower form.
  */
-void STRtoLower(char *str)
-{
+void STRtoLower(char *str) {
     if (!str) {
         return;
     }
@@ -584,8 +574,7 @@ void STRtoLower(char *str)
  * Convert string to upper string by consuming the string.
  * @param str the string to convert to upper form.
  */
-void STRtoUpper(char *str)
-{
+void STRtoUpper(char *str) {
     if (!str) {
         return;
     }
@@ -601,8 +590,7 @@ void STRtoUpper(char *str)
  * @param str The string to transform.
  * @return Malloced string, which is the lower form of str.
  */
-char *STRlower(const char *str)
-{
+char *STRlower(const char *str) {
     if (!str) {
         return NULL;
     }
@@ -621,12 +609,12 @@ char *STRlower(const char *str)
 }
 
 /**
- * @brief Convert a string to its upper form, but does not consume the original string.
+ * @brief Convert a string to its upper form, but does not consume the original
+ * string.
  * @param str The string to transform
  * @return Allocated string, which is the upper form of str.
  */
-char *STRupper(const char *str)
-{
+char *STRupper(const char *str) {
     if (!str) {
         return NULL;
     }
