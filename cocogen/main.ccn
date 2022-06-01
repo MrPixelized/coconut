@@ -266,7 +266,7 @@ traversal dynamicGenFreeTraversal {
 traversal dynamicGenShorthandTraversal {
 	uid = DGSHT,
 
-	nodes = {ast, rte}
+	nodes = {ast}
 };
 
 traversal dynamicGenConstructorCall {
@@ -377,11 +377,19 @@ phase constructRuleTable {
     uid = CRT,
 
     actions {
+		// addDefaultRules; TODO
         buildRuleTable;
 		convertRawRules;
 		iterateRuleTable;
+		ruleTemplatesToRegex;
     }
 };
+
+// traversal addDefaultRules {
+// 	uid = ADR,
+// 
+// 	nodes = { inode, raw_rule }
+// };
 
 traversal buildRuleTable {
     uid = BRT,
@@ -399,6 +407,12 @@ traversal iterateRuleTable {
     uid = IRT,
 
 	nodes = {ast, rte, rule}
+};
+
+traversal ruleTemplatesToRegex {
+	uid = RTTR,
+
+	nodes = { rte, rule }
 };
 
 traversal unwrapSetExpr {
@@ -667,6 +681,10 @@ node rule {
 		pattern pattern { constructor, mandatory },
 		pattern result,
 		rule_type type
+	},
+
+	rules {
+		"RULE<>" = "node = ASTrule(ASTpattern())"
 	}
 };
 
@@ -713,6 +731,12 @@ node rte {
 	attributes {
 		id type
 		//id type { mandatory (constructRuleTable -> )}
+	},
+
+	rules {
+		"RTE<>",
+		"RTE<{rule}>" = "node = ASTrte(); RTE_RULE(node) = rule",
+		"RTE<{rule}, {next}>" = "node = ASTrte(); RTE_RULE(node) = rule; RTE_NEXT(node) = next"
 	}
 };
 
