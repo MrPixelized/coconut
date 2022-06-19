@@ -32,11 +32,28 @@ node_st *CRRast(node_st *node) {
     while (last && RTE_NEXT(last))
         last = RTE_NEXT(last);
 
-    CCNshorthand("hi, %s, you're %i years old & %f\\% of a man", "tim", 3, .4);
-    CCNshorthand("soupkip test test test brompel");
-    CCNshorthand("soupkip RTE: rule, next brompel");
-    CCNshorthand("soupkip small dog test test test RTE: rule, next brompel");
-    CCNshorthand("soupkip test test test small dog RTE: rule, next brompel");
+    node_st *test;
+
+    // This actually works!
+    node_st *rule = CCNshorthand("RULE<>");
+    test = CCNshorthand("RTE<RULE<>>;"
+                        "RTE<%n>;"
+                        "RTE<RULE<>>;",
+                        rule);
+
+    while (test) {
+        if (NODE_TYPE(test) == NT_RTE)
+            printf("OK\n");
+        else
+            printf("FAIL\n");
+
+        if (NODE_TYPE(RTE_RULE(test)) == NT_RULE)
+            printf("OK\n");
+        else
+            printf("FAIL\n");
+
+        test = RTE_NEXT(test);
+    }
 
     // Keep iterating over the table and rewrite every raw string to a
     // pattern

@@ -23,8 +23,7 @@ static node_st *last = NULL;  // last rule table entry
 static node_st *rule = NULL;  // rule of the current rule table entry
 static node_st *type = NULL;  // node corresponding to the return type of the
                               // current rule table entry
-static node_st *child = NULL; // child of the current node
-static node_st *attr = NULL;  // attribute of the current node
+static node_st *field = NULL; // fields of the current node
 
 bool rtable_is_map(node_st *rte) {
     while (rte && RTE_NEXT(rte)) {
@@ -61,54 +60,24 @@ node_st *IRTrte(node_st *node) {
 
 node_st *IRTrule(node_st *node) {
     char *result;
-    node_st *field;
 
     switch (RULE_TYPE(node)) {
     case RT_template:
         // If this is a template rule, remap the placeholders to an actual
         // C expression -> a map rule
-        field = PATTERN_FIELDS(RULE_PATTERN(node));
 
         // Assign a constructor call to the node
-        asprintf(&result, "node = AST%s(", ID_LWR(INODE_NAME(type)));
+        asprintf(&result, "node = NEW%s()", ID_LWR(INODE_NAME(type)));
 
-        // Iterate over constructor children and add them to the arguments
-        bool preceding = false;
-        child = INODE_ICHILDREN(type);
-        while (child) {
-            if (CHILD_IN_CONSTRUCTOR(child)) {
-                if (!preceding) {
-                    asprintf(&result, "%s%s", result,
-                             ID_ORIG(CHILD_NAME(child)));
-                    preceding = true;
-                } else {
-                    asprintf(&result, "%s, %s", result,
-                             ID_ORIG(CHILD_NAME(child)));
-                }
-            }
+        // Iterate over the fields in the pattern and assign their values
+        field = PATTERN_FIELDS(RULE_PATTERN(node));
+        while (field) {
+            asprintf(&result, "%s; %s_%s(node) = %s", result,
+                     ID_UPR(INODE_NAME(type)), STRupper(FIELD_NAME(field)),
+                     FIELD_NAME(field));
 
-            child = CHILD_NEXT(child);
+            field = FIELD_NEXT(field);
         }
-
-        // Iterate over constructor attributes and add them to the arguments
-        attr = INODE_IATTRIBUTES(type);
-        while (attr) {
-            if (ATTRIBUTE_IN_CONSTRUCTOR(attr)) {
-                if (!preceding) {
-                    asprintf(&result, "%s%s", result,
-                             ID_ORIG(ATTRIBUTE_NAME(attr)));
-                    preceding = true;
-                } else {
-                    asprintf(&result, "%s, %s", result,
-                             ID_ORIG(ATTRIBUTE_NAME(attr)));
-                }
-            }
-
-            attr = ATTRIBUTE_NEXT(attr);
-        }
-
-        // Close the constructor call
-        asprintf(&result, "%s)", result);
 
         // Assign the generated C code to the node
         PATTERN_TEMPLATE(RULE_RESULT(node)) = result;

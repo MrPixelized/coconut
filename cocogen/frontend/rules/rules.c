@@ -17,8 +17,7 @@ node_st *parse_fields(char *pattern) {
     int i = 0;
 
     // Compile the regular expression - return NULL on failure
-    if (regcomp(&regex, "[^\\\\]\\{([A-Za-z0-9_]+)\\}",
-                REG_EXTENDED | REG_NEWLINE))
+    if (regcomp(&regex, "\\{([A-Za-z0-9_]+)\\}", REG_EXTENDED | REG_NEWLINE))
         return NULL;
 
     // Set up the fields to store matches in
@@ -54,9 +53,5 @@ node_st *parse_fields(char *pattern) {
     else
         FIELD_NEXT(curr) = NULL;
 
-    return fields;
-}
-
-node_st *associate_type_info(node_st *fields, node_st *rettype) {
     return fields;
 }

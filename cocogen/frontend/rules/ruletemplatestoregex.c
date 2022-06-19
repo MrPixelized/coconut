@@ -14,6 +14,7 @@
 #include "palm/hash_table.h"
 #include "palm/str.h"
 #include "stdbool.h"
+#include <err.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -55,7 +56,8 @@ node_st *RTTRrule(node_st *node) {
                 type = "%s";
                 break;
             default:
-                continue;
+                err(EXIT_FAILURE, "Unknown type for template field ({%s}).\n",
+                    FIELD_NAME(field));
             }
 
         // Replace the rule syntax ({field}) with the type specifier
