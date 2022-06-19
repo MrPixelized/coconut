@@ -13,6 +13,212 @@ node_st *NewNode() {
     return node;
 }
 
+node_st *NEWid() {
+    node_st *node = NewNode();
+    node->data.N_id = MEMmalloc(sizeof(struct NODE_DATA_ID));
+    NODE_TYPE(node) = NT_ID;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_id->id_children.id_children_at;
+    return node;
+}
+
+node_st *NEWienum() {
+    node_st *node = NewNode();
+    node->data.N_ienum = MEMmalloc(sizeof(struct NODE_DATA_IENUM));
+    NODE_TYPE(node) = NT_IENUM;
+    NODE_NUMCHILDREN(node) = 4;
+    NODE_CHILDREN(node) = node->data.N_ienum->ienum_children.ienum_children_at;
+    return node;
+}
+
+node_st *NEWattribute() {
+    node_st *node = NewNode();
+    node->data.N_attribute = MEMmalloc(sizeof(struct NODE_DATA_ATTRIBUTE));
+    NODE_TYPE(node) = NT_ATTRIBUTE;
+    NODE_NUMCHILDREN(node) = 4;
+    NODE_CHILDREN(node) = node->data.N_attribute->attribute_children.attribute_children_at;
+    return node;
+}
+
+node_st *NEWitravdata() {
+    node_st *node = NewNode();
+    node->data.N_itravdata = MEMmalloc(sizeof(struct NODE_DATA_ITRAVDATA));
+    NODE_TYPE(node) = NT_ITRAVDATA;
+    NODE_NUMCHILDREN(node) = 3;
+    NODE_CHILDREN(node) = node->data.N_itravdata->itravdata_children.itravdata_children_at;
+    return node;
+}
+
+node_st *NEWsetoperation() {
+    node_st *node = NewNode();
+    node->data.N_setoperation = MEMmalloc(sizeof(struct NODE_DATA_SETOPERATION));
+    NODE_TYPE(node) = NT_SETOPERATION;
+    NODE_NUMCHILDREN(node) = 2;
+    NODE_CHILDREN(node) = node->data.N_setoperation->setoperation_children.setoperation_children_at;
+    return node;
+}
+
+node_st *NEWsetliteral() {
+    node_st *node = NewNode();
+    node->data.N_setliteral = MEMmalloc(sizeof(struct NODE_DATA_SETLITERAL));
+    NODE_TYPE(node) = NT_SETLITERAL;
+    NODE_NUMCHILDREN(node) = 3;
+    NODE_CHILDREN(node) = node->data.N_setliteral->setliteral_children.setliteral_children_at;
+    return node;
+}
+
+node_st *NEWsetreference() {
+    node_st *node = NewNode();
+    node->data.N_setreference = MEMmalloc(sizeof(struct NODE_DATA_SETREFERENCE));
+    NODE_TYPE(node) = NT_SETREFERENCE;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_setreference->setreference_children.setreference_children_at;
+    return node;
+}
+
+node_st *NEWrte() {
+    node_st *node = NewNode();
+    node->data.N_rte = MEMmalloc(sizeof(struct NODE_DATA_RTE));
+    NODE_TYPE(node) = NT_RTE;
+    NODE_NUMCHILDREN(node) = 2;
+    NODE_CHILDREN(node) = node->data.N_rte->rte_children.rte_children_at;
+    return node;
+}
+
+node_st *NEWste() {
+    node_st *node = NewNode();
+    node->data.N_ste = MEMmalloc(sizeof(struct NODE_DATA_STE));
+    NODE_TYPE(node) = NT_STE;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_ste->ste_children.ste_children_at;
+    return node;
+}
+
+node_st *NEWchild() {
+    node_st *node = NewNode();
+    node->data.N_child = MEMmalloc(sizeof(struct NODE_DATA_CHILD));
+    NODE_TYPE(node) = NT_CHILD;
+    NODE_NUMCHILDREN(node) = 4;
+    NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
+    return node;
+}
+
+node_st *NEWrule() {
+    node_st *node = NewNode();
+    node->data.N_rule = MEMmalloc(sizeof(struct NODE_DATA_RULE));
+    NODE_TYPE(node) = NT_RULE;
+    NODE_NUMCHILDREN(node) = 0;
+    return node;
+}
+
+node_st *NEWfield() {
+    node_st *node = NewNode();
+    node->data.N_field = MEMmalloc(sizeof(struct NODE_DATA_FIELD));
+    NODE_TYPE(node) = NT_FIELD;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_field->field_children.field_children_at;
+    return node;
+}
+
+node_st *NEWpattern() {
+    node_st *node = NewNode();
+    node->data.N_pattern = MEMmalloc(sizeof(struct NODE_DATA_PATTERN));
+    NODE_TYPE(node) = NT_PATTERN;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_pattern->pattern_children.pattern_children_at;
+    return node;
+}
+
+node_st *NEWraw_rule() {
+    node_st *node = NewNode();
+    node->data.N_raw_rule = MEMmalloc(sizeof(struct NODE_DATA_RAW_RULE));
+    NODE_TYPE(node) = NT_RAW_RULE;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_raw_rule->raw_rule_children.raw_rule_children_at;
+    return node;
+}
+
+node_st *NEWlifetime_range() {
+    node_st *node = NewNode();
+    node->data.N_lifetime_range = MEMmalloc(sizeof(struct NODE_DATA_LIFETIME_RANGE));
+    NODE_TYPE(node) = NT_LIFETIME_RANGE;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_at;
+    return node;
+}
+
+node_st *NEWilifetime() {
+    node_st *node = NewNode();
+    node->data.N_ilifetime = MEMmalloc(sizeof(struct NODE_DATA_ILIFETIME));
+    NODE_TYPE(node) = NT_ILIFETIME;
+    NODE_NUMCHILDREN(node) = 3;
+    NODE_CHILDREN(node) = node->data.N_ilifetime->ilifetime_children.ilifetime_children_at;
+    return node;
+}
+
+node_st *NEWinodeset() {
+    node_st *node = NewNode();
+    node->data.N_inodeset = MEMmalloc(sizeof(struct NODE_DATA_INODESET));
+    NODE_TYPE(node) = NT_INODESET;
+    NODE_NUMCHILDREN(node) = 4;
+    NODE_CHILDREN(node) = node->data.N_inodeset->inodeset_children.inodeset_children_at;
+    return node;
+}
+
+node_st *NEWinode() {
+    node_st *node = NewNode();
+    node->data.N_inode = MEMmalloc(sizeof(struct NODE_DATA_INODE));
+    NODE_TYPE(node) = NT_INODE;
+    NODE_NUMCHILDREN(node) = 6;
+    NODE_CHILDREN(node) = node->data.N_inode->inode_children.inode_children_at;
+    return node;
+}
+
+node_st *NEWipass() {
+    node_st *node = NewNode();
+    node->data.N_ipass = MEMmalloc(sizeof(struct NODE_DATA_IPASS));
+    NODE_TYPE(node) = NT_IPASS;
+    NODE_NUMCHILDREN(node) = 4;
+    NODE_CHILDREN(node) = node->data.N_ipass->ipass_children.ipass_children_at;
+    return node;
+}
+
+node_st *NEWitraversal() {
+    node_st *node = NewNode();
+    node->data.N_itraversal = MEMmalloc(sizeof(struct NODE_DATA_ITRAVERSAL));
+    NODE_TYPE(node) = NT_ITRAVERSAL;
+    NODE_NUMCHILDREN(node) = 5;
+    NODE_CHILDREN(node) = node->data.N_itraversal->itraversal_children.itraversal_children_at;
+    return node;
+}
+
+node_st *NEWiphase() {
+    node_st *node = NewNode();
+    node->data.N_iphase = MEMmalloc(sizeof(struct NODE_DATA_IPHASE));
+    NODE_TYPE(node) = NT_IPHASE;
+    NODE_NUMCHILDREN(node) = 5;
+    NODE_CHILDREN(node) = node->data.N_iphase->iphase_children.iphase_children_at;
+    return node;
+}
+
+node_st *NEWiactions() {
+    node_st *node = NewNode();
+    node->data.N_iactions = MEMmalloc(sizeof(struct NODE_DATA_IACTIONS));
+    NODE_TYPE(node) = NT_IACTIONS;
+    NODE_NUMCHILDREN(node) = 2;
+    NODE_CHILDREN(node) = node->data.N_iactions->iactions_children.iactions_children_at;
+    return node;
+}
+
+node_st *NEWast() {
+    node_st *node = NewNode();
+    node->data.N_ast = MEMmalloc(sizeof(struct NODE_DATA_AST));
+    NODE_TYPE(node) = NT_AST;
+    NODE_NUMCHILDREN(node) = 8;
+    NODE_CHILDREN(node) = node->data.N_ast->ast_children.ast_children_at;
+    return node;
+}
+
 node_st *ASTid(char * orig, char * lwr, char * Upr) {
     node_st *node = NewNode();
     node->data.N_id = MEMmalloc(sizeof(struct NODE_DATA_ID));
@@ -105,6 +311,7 @@ node_st *ASTrte() {
     NODE_TYPE(node) = NT_RTE;
     RTE_RULE(node) = NULL;
     RTE_NEXT(node) = NULL;
+    RTE_TYPE(node) = NULL;
     NODE_NUMCHILDREN(node) = 2;
     NODE_CHILDREN(node) = node->data.N_rte->rte_children.rte_children_at;
     return node;}
@@ -135,16 +342,50 @@ node_st *ASTchild(node_st *name) {
     NODE_CHILDREN(node) = node->data.N_child->child_children.child_children_at;
     return node;}
 
-node_st *ASTrule(char * pattern) {
+node_st *ASTrule(node_st *pattern) {
     node_st *node = NewNode();
     node->data.N_rule = MEMmalloc(sizeof(struct NODE_DATA_RULE));
     NODE_TYPE(node) = NT_RULE;
-    RULE_NEXT(node) = NULL;
     RULE_PATTERN(node) = pattern;
     RULE_RESULT(node) = NULL;
     RULE_TYPE(node) = 0;
+    NODE_NUMCHILDREN(node) = 0;
+    return node;}
+
+node_st *ASTfield() {
+    node_st *node = NewNode();
+    node->data.N_field = MEMmalloc(sizeof(struct NODE_DATA_FIELD));
+    NODE_TYPE(node) = NT_FIELD;
+    FIELD_NEXT(node) = NULL;
+    FIELD_NAME(node) = NULL;
+    FIELD_NODE_TYPE(node) = NULL;
+    FIELD_ATTR_TYPE(node) = 0;
+    FIELD_IS_ATTRIBUTE(node) = false;
+    FIELD_INDEX(node) = 0;
     NODE_NUMCHILDREN(node) = 1;
-    NODE_CHILDREN(node) = node->data.N_rule->rule_children.rule_children_at;
+    NODE_CHILDREN(node) = node->data.N_field->field_children.field_children_at;
+    return node;}
+
+node_st *ASTpattern() {
+    node_st *node = NewNode();
+    node->data.N_pattern = MEMmalloc(sizeof(struct NODE_DATA_PATTERN));
+    NODE_TYPE(node) = NT_PATTERN;
+    PATTERN_FIELDS(node) = NULL;
+    PATTERN_TEMPLATE(node) = NULL;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_pattern->pattern_children.pattern_children_at;
+    return node;}
+
+node_st *ASTraw_rule(char * pattern) {
+    node_st *node = NewNode();
+    node->data.N_raw_rule = MEMmalloc(sizeof(struct NODE_DATA_RAW_RULE));
+    NODE_TYPE(node) = NT_RAW_RULE;
+    RAW_RULE_NEXT(node) = NULL;
+    RAW_RULE_PATTERN(node) = pattern;
+    RAW_RULE_RESULT(node) = NULL;
+    RAW_RULE_TYPE(node) = 0;
+    NODE_NUMCHILDREN(node) = 1;
+    NODE_CHILDREN(node) = node->data.N_raw_rule->raw_rule_children.raw_rule_children_at;
     return node;}
 
 node_st *ASTlifetime_range() {

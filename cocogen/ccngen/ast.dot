@@ -25,8 +25,9 @@ setliteral -> setliteral[label="right"]
 setreference;
 setreference -> id[label="reference"]
 rte;
-rte -> rule[label="rule"]
+rte -> rte_rule[label="rule"]
 rte -> rte[label="next"]
+rte -> id[color=red, label="type"]
 ste;
 ste -> ste[label="next"]
 ste -> id[color=red, label="key"]
@@ -37,7 +38,15 @@ child -> ilifetime[label="lifetimes"]
 child -> child[label="next"]
 child -> id[label="type_reference"]
 rule;
-rule -> rule[label="next"]
+rule -> pattern[color=red, label="pattern"]
+rule -> pattern[color=red, label="result"]
+field;
+field -> field[label="next"]
+field -> id[color=red, label="node_type"]
+pattern;
+pattern -> field[label="fields"]
+raw_rule;
+raw_rule -> raw_rule[label="next"]
 lifetime_range;
 lifetime_range -> id[label="target"]
 ilifetime;
@@ -54,7 +63,7 @@ inode -> id[label="name"]
 inode -> inode[label="next"]
 inode -> child[label="ichildren"]
 inode -> attribute[label="iattributes"]
-inode -> rule[label="irules"]
+inode -> raw_rule[label="irules"]
 inode -> ilifetime[label="lifetimes"]
 ipass;
 ipass -> id[label="name"]
@@ -91,6 +100,9 @@ setexpr;
 setexpr -> setoperation [color=blue]
 setexpr -> setreference [color=blue]
 setexpr -> setliteral [color=blue]
+rte_rule;
+rte_rule -> rule [color=blue]
+rte_rule -> raw_rule [color=blue]
 link;
 link -> iphase [color=blue]
 link -> itraversal [color=blue]

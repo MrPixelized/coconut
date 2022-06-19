@@ -87,11 +87,36 @@ struct ccn_node *DELchild(struct ccn_node *arg_node) {
 }
 
 struct ccn_node *DELrule(struct ccn_node *arg_node) {
-    TRAVchildren(arg_node);
-    MEMfree(arg_node->data.N_rule->pattern);
-    MEMfree(arg_node->data.N_rule->result);
     MEMfree(NODE_FILENAME(arg_node));
     MEMfree(arg_node->data.N_rule);
+    MEMfree(arg_node);
+    return NULL;
+}
+
+struct ccn_node *DELfield(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_field->name);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_field);
+    MEMfree(arg_node);
+    return NULL;
+}
+
+struct ccn_node *DELpattern(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_pattern->template);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_pattern);
+    MEMfree(arg_node);
+    return NULL;
+}
+
+struct ccn_node *DELraw_rule(struct ccn_node *arg_node) {
+    TRAVchildren(arg_node);
+    MEMfree(arg_node->data.N_raw_rule->pattern);
+    MEMfree(arg_node->data.N_raw_rule->result);
+    MEMfree(NODE_FILENAME(arg_node));
+    MEMfree(arg_node->data.N_raw_rule);
     MEMfree(arg_node);
     return NULL;
 }

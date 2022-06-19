@@ -87,6 +87,7 @@ ccn_node *CPYrte(ccn_node *arg_node) {
     CopyBaseNode(new_node, arg_node);
     RTE_RULE(new_node) = TRAVopt(RTE_RULE(arg_node));
     RTE_NEXT(new_node) = TRAVopt(RTE_NEXT(arg_node));
+    RTE_TYPE(new_node) = RTE_TYPE(arg_node);
     return new_node;
 }
 
@@ -115,10 +116,39 @@ ccn_node *CPYchild(ccn_node *arg_node) {
 ccn_node *CPYrule(ccn_node *arg_node) {
     ccn_node *new_node =ASTrule(    NULL);
     CopyBaseNode(new_node, arg_node);
-    RULE_NEXT(new_node) = TRAVopt(RULE_NEXT(arg_node));
-    RULE_PATTERN(new_node) = STRcpy(RULE_PATTERN(arg_node));
-    RULE_RESULT(new_node) = STRcpy(RULE_RESULT(arg_node));
+    RULE_PATTERN(new_node) = RULE_PATTERN(arg_node);
+    RULE_RESULT(new_node) = RULE_RESULT(arg_node);
     RULE_TYPE(new_node) = RULE_TYPE(arg_node);
+    return new_node;
+}
+
+ccn_node *CPYfield(ccn_node *arg_node) {
+    ccn_node *new_node =ASTfield();
+    CopyBaseNode(new_node, arg_node);
+    FIELD_NEXT(new_node) = TRAVopt(FIELD_NEXT(arg_node));
+    FIELD_NAME(new_node) = STRcpy(FIELD_NAME(arg_node));
+    FIELD_NODE_TYPE(new_node) = FIELD_NODE_TYPE(arg_node);
+    FIELD_ATTR_TYPE(new_node) = FIELD_ATTR_TYPE(arg_node);
+    FIELD_IS_ATTRIBUTE(new_node) = FIELD_IS_ATTRIBUTE(arg_node);
+    FIELD_INDEX(new_node) = FIELD_INDEX(arg_node);
+    return new_node;
+}
+
+ccn_node *CPYpattern(ccn_node *arg_node) {
+    ccn_node *new_node =ASTpattern();
+    CopyBaseNode(new_node, arg_node);
+    PATTERN_FIELDS(new_node) = TRAVopt(PATTERN_FIELDS(arg_node));
+    PATTERN_TEMPLATE(new_node) = STRcpy(PATTERN_TEMPLATE(arg_node));
+    return new_node;
+}
+
+ccn_node *CPYraw_rule(ccn_node *arg_node) {
+    ccn_node *new_node =ASTraw_rule(    NULL);
+    CopyBaseNode(new_node, arg_node);
+    RAW_RULE_NEXT(new_node) = TRAVopt(RAW_RULE_NEXT(arg_node));
+    RAW_RULE_PATTERN(new_node) = STRcpy(RAW_RULE_PATTERN(arg_node));
+    RAW_RULE_RESULT(new_node) = STRcpy(RAW_RULE_RESULT(arg_node));
+    RAW_RULE_TYPE(new_node) = RAW_RULE_TYPE(arg_node);
     return new_node;
 }
 

@@ -113,6 +113,7 @@ struct NODE_DATA_RTE {
         node_st *rte_children_at[2];
     } rte_children;
 
+    node_st *type;
 };
 
 struct NODE_DATA_STE {
@@ -146,13 +147,47 @@ struct NODE_DATA_CHILD {
 };
 
 struct NODE_DATA_RULE {
-    union NODE_CHILDREN_RULE {
-        struct NODE_CHILDREN_RULE_STRUCT {
-            node_st *next;
-        } rule_children_st;
+    node_st *pattern;
+    node_st *result;
+    enum rule_type type;
+};
 
-        node_st *rule_children_at[1];
-    } rule_children;
+struct NODE_DATA_FIELD {
+    union NODE_CHILDREN_FIELD {
+        struct NODE_CHILDREN_FIELD_STRUCT {
+            node_st *next;
+        } field_children_st;
+
+        node_st *field_children_at[1];
+    } field_children;
+
+    char * name;
+    node_st *node_type;
+    enum attribute_type attr_type;
+    bool is_attribute;
+    int index;
+};
+
+struct NODE_DATA_PATTERN {
+    union NODE_CHILDREN_PATTERN {
+        struct NODE_CHILDREN_PATTERN_STRUCT {
+            node_st *fields;
+        } pattern_children_st;
+
+        node_st *pattern_children_at[1];
+    } pattern_children;
+
+    char * template;
+};
+
+struct NODE_DATA_RAW_RULE {
+    union NODE_CHILDREN_RAW_RULE {
+        struct NODE_CHILDREN_RAW_RULE_STRUCT {
+            node_st *next;
+        } raw_rule_children_st;
+
+        node_st *raw_rule_children_at[1];
+    } raw_rule_children;
 
     char * pattern;
     char * result;
@@ -339,6 +374,7 @@ struct NODE_DATA_AST {
 #define SETREFERENCE_REFERENCE(n) ((n)->data.N_setreference->setreference_children.setreference_children_st.reference)
 #define RTE_RULE(n) ((n)->data.N_rte->rte_children.rte_children_st.rule)
 #define RTE_NEXT(n) ((n)->data.N_rte->rte_children.rte_children_st.next)
+#define RTE_TYPE(n) ((n)->data.N_rte->type)
 #define STE_NEXT(n) ((n)->data.N_ste->ste_children.ste_children_st.next)
 #define STE_KEY(n) ((n)->data.N_ste->key)
 #define STE_VALUE(n) ((n)->data.N_ste->value)
@@ -349,10 +385,21 @@ struct NODE_DATA_AST {
 #define CHILD_TYPE(n) ((n)->data.N_child->type)
 #define CHILD_IN_CONSTRUCTOR(n) ((n)->data.N_child->in_constructor)
 #define CHILD_IS_MANDATORY(n) ((n)->data.N_child->is_mandatory)
-#define RULE_NEXT(n) ((n)->data.N_rule->rule_children.rule_children_st.next)
 #define RULE_PATTERN(n) ((n)->data.N_rule->pattern)
 #define RULE_RESULT(n) ((n)->data.N_rule->result)
 #define RULE_TYPE(n) ((n)->data.N_rule->type)
+#define FIELD_NEXT(n) ((n)->data.N_field->field_children.field_children_st.next)
+#define FIELD_NAME(n) ((n)->data.N_field->name)
+#define FIELD_NODE_TYPE(n) ((n)->data.N_field->node_type)
+#define FIELD_ATTR_TYPE(n) ((n)->data.N_field->attr_type)
+#define FIELD_IS_ATTRIBUTE(n) ((n)->data.N_field->is_attribute)
+#define FIELD_INDEX(n) ((n)->data.N_field->index)
+#define PATTERN_FIELDS(n) ((n)->data.N_pattern->pattern_children.pattern_children_st.fields)
+#define PATTERN_TEMPLATE(n) ((n)->data.N_pattern->template)
+#define RAW_RULE_NEXT(n) ((n)->data.N_raw_rule->raw_rule_children.raw_rule_children_st.next)
+#define RAW_RULE_PATTERN(n) ((n)->data.N_raw_rule->pattern)
+#define RAW_RULE_RESULT(n) ((n)->data.N_raw_rule->result)
+#define RAW_RULE_TYPE(n) ((n)->data.N_raw_rule->type)
 #define LIFETIME_RANGE_TARGET(n) ((n)->data.N_lifetime_range->lifetime_range_children.lifetime_range_children_st.target)
 #define LIFETIME_RANGE_INCLUSIVE(n) ((n)->data.N_lifetime_range->inclusive)
 #define LIFETIME_RANGE_ACTION_ID(n) ((n)->data.N_lifetime_range->action_id)
@@ -411,6 +458,29 @@ struct NODE_DATA_AST {
 #define AST_ROOT_NODE(n) ((n)->data.N_ast->root_node)
 #define AST_START_PHASE(n) ((n)->data.N_ast->start_phase)
 #define AST_USES_UNSAFE(n) ((n)->data.N_ast->uses_unsafe)
+node_st *NEWid();
+node_st *NEWienum();
+node_st *NEWattribute();
+node_st *NEWitravdata();
+node_st *NEWsetoperation();
+node_st *NEWsetliteral();
+node_st *NEWsetreference();
+node_st *NEWrte();
+node_st *NEWste();
+node_st *NEWchild();
+node_st *NEWrule();
+node_st *NEWfield();
+node_st *NEWpattern();
+node_st *NEWraw_rule();
+node_st *NEWlifetime_range();
+node_st *NEWilifetime();
+node_st *NEWinodeset();
+node_st *NEWinode();
+node_st *NEWipass();
+node_st *NEWitraversal();
+node_st *NEWiphase();
+node_st *NEWiactions();
+node_st *NEWast();
 node_st *ASTid(char * orig, char * lwr, char * Upr);
 node_st *ASTienum(node_st *vals, node_st *name, node_st *iprefix, char * iinfo);
 node_st *ASTattribute();
@@ -421,7 +491,10 @@ node_st *ASTsetreference();
 node_st *ASTrte();
 node_st *ASTste();
 node_st *ASTchild(node_st *name);
-node_st *ASTrule(char * pattern);
+node_st *ASTrule(node_st *pattern);
+node_st *ASTfield();
+node_st *ASTpattern();
+node_st *ASTraw_rule(char * pattern);
 node_st *ASTlifetime_range();
 node_st *ASTilifetime();
 node_st *ASTinodeset();
@@ -441,6 +514,9 @@ union NODE_DATA {
     struct NODE_DATA_INODESET *N_inodeset;
     struct NODE_DATA_ILIFETIME *N_ilifetime;
     struct NODE_DATA_LIFETIME_RANGE *N_lifetime_range;
+    struct NODE_DATA_RAW_RULE *N_raw_rule;
+    struct NODE_DATA_PATTERN *N_pattern;
+    struct NODE_DATA_FIELD *N_field;
     struct NODE_DATA_RULE *N_rule;
     struct NODE_DATA_CHILD *N_child;
     struct NODE_DATA_STE *N_ste;

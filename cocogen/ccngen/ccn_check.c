@@ -38,6 +38,15 @@ char *nodetypeToName(node_st *node) {
         case NT_RULE:
             return "rule";
             break;
+        case NT_FIELD:
+            return "field";
+            break;
+        case NT_PATTERN:
+            return "pattern";
+            break;
+        case NT_RAW_RULE:
+            return "raw_rule";
+            break;
         case NT_LIFETIME_RANGE:
             return "lifetime_range";
             break;
@@ -74,6 +83,11 @@ char *nodetypeToName(node_st *node) {
 static bool TypeIssetexpr(node_st *arg_node) {
     enum ccn_nodetype node_type = NODE_TYPE(arg_node);
     return (false || node_type == NT_SETOPERATION || node_type == NT_SETLITERAL || node_type == NT_SETREFERENCE    );
+}
+
+static bool TypeIsrte_rule(node_st *arg_node) {
+    enum ccn_nodetype node_type = NODE_TYPE(arg_node);
+    return (false || node_type == NT_RULE || node_type == NT_RAW_RULE    );
 }
 
 static bool TypeIslink(node_st *arg_node) {
@@ -243,7 +257,7 @@ struct ccn_node *CHKsetoperation(struct ccn_node *arg_node) {
         CTI(CTI_ERROR, true, "Child(right) in node(setoperation) is missing, but specified as mandatory.\n");;
     }
 
-    if (action_id >= 9 && true) {
+    if (action_id >= 13 && true) {
         CTI(CTI_ERROR, true, "Found disallowed node(setoperation) in tree.\n");
     }
 
@@ -289,7 +303,7 @@ struct ccn_node *CHKsetreference(struct ccn_node *arg_node) {
 
     }
 
-    if (action_id >= 9 || false) {
+    if (action_id >= 13 || false) {
         CTI(CTI_ERROR, true, "Found disallowed Found disallowed node(setreference) in tree. in tree.\n");
     }
 
@@ -301,7 +315,7 @@ struct ccn_node *CHKrte(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
     if (RTE_RULE(arg_node)) {
-        if (NODE_TYPE(RTE_RULE(arg_node)) != NT_RULE) {
+        if (!TypeIsrte_rule(RTE_RULE(arg_node))) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(rule) of node(rte) has disallowed type(%s) ", nodetypeToName(RTE_RULE(arg_node)));
         }
 
@@ -381,15 +395,53 @@ struct ccn_node *CHKchild(struct ccn_node *arg_node) {
 struct ccn_node *CHKrule(struct ccn_node *arg_node) {
     size_t action_id = CCNgetCurrentActionId();
     (void)action_id;
-    if (RULE_NEXT(arg_node)) {
-        if (NODE_TYPE(RULE_NEXT(arg_node)) != NT_RULE) {
-            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(rule) has disallowed type(%s) ", nodetypeToName(RULE_NEXT(arg_node)));
+    if (RULE_PATTERN(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(pattern) in node(rule) is missing, but specified as mandatory.\n");;
+    }
+
+    return arg_node;
+}
+
+struct ccn_node *CHKfield(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (FIELD_NEXT(arg_node)) {
+        if (NODE_TYPE(FIELD_NEXT(arg_node)) != NT_FIELD) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(field) has disallowed type(%s) ", nodetypeToName(FIELD_NEXT(arg_node)));
         }
 
     }
 
-    if (RULE_PATTERN(arg_node) == NULL) {
-        CTI(CTI_ERROR, true, "Attribute(pattern) in node(rule) is missing, but specified as mandatory.\n");;
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKpattern(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (PATTERN_FIELDS(arg_node)) {
+        if (NODE_TYPE(PATTERN_FIELDS(arg_node)) != NT_FIELD) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(fields) of node(pattern) has disallowed type(%s) ", nodetypeToName(PATTERN_FIELDS(arg_node)));
+        }
+
+    }
+
+    TRAVchildren(arg_node);
+    return arg_node;
+}
+
+struct ccn_node *CHKraw_rule(struct ccn_node *arg_node) {
+    size_t action_id = CCNgetCurrentActionId();
+    (void)action_id;
+    if (RAW_RULE_NEXT(arg_node)) {
+        if (NODE_TYPE(RAW_RULE_NEXT(arg_node)) != NT_RAW_RULE) {
+            CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(next) of node(raw_rule) has disallowed type(%s) ", nodetypeToName(RAW_RULE_NEXT(arg_node)));
+        }
+
+    }
+
+    if (RAW_RULE_PATTERN(arg_node) == NULL) {
+        CTI(CTI_ERROR, true, "Attribute(pattern) in node(raw_rule) is missing, but specified as mandatory.\n");;
     }
 
     TRAVchildren(arg_node);
@@ -509,7 +561,7 @@ struct ccn_node *CHKinode(struct ccn_node *arg_node) {
     }
 
     if (INODE_IRULES(arg_node)) {
-        if (NODE_TYPE(INODE_IRULES(arg_node)) != NT_RULE) {
+        if (NODE_TYPE(INODE_IRULES(arg_node)) != NT_RAW_RULE) {
             CTI(CTI_ERROR, true, "Inconsistent node found in AST. Child(irules) of node(inode) has disallowed type(%s) ", nodetypeToName(INODE_IRULES(arg_node)));
         }
 
