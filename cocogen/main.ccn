@@ -93,7 +93,7 @@ phase dynamicBackend {
         dynamicGenActionsHeader;
         dynamicGenCopyTraversal;
         dynamicGenFreeTraversal;
-		dynamicGenShorthandTraversal;
+		dynamicGenShorthand;
         dynamicGenCheckTraversal;
         dynamicGenUserFiles;
         dynamicGenTravFunctions;
@@ -142,11 +142,13 @@ phase dynamicGenAst {
         pass dynamic_start_ast_header;
         dynamicGenNodeStructs;
         dynamicGenNodeMacros;
+        dynamicGenEmptyNodeInitFunctions;
         dynamicGenNodeInitFunctions;
         dynamicGenNodeUnion;
         pass dynamicGenBaseNode;
         pass dynamicSwitchToAstSource;
         pass dynamicGenBaseNodeInit;
+        dynamicGenEmptyNodeConstructor;
         dynamicGenNodeConstructor;
     }
 };
@@ -263,7 +265,7 @@ traversal dynamicGenFreeTraversal {
     uid = DGFT
 };
 
-traversal dynamicGenShorthandTraversal {
+traversal dynamicGenShorthand {
 	uid = DGSHT,
 
 	nodes = {ast}
@@ -333,6 +335,12 @@ traversal dynamicGenEnum {
     nodes = {ast, inode, itraversal, inodeset, ipass}
 };
 
+traversal dynamicGenEmptyNodeConstructor {
+    uid = DGENC,
+
+    nodes = {inode, child}
+};
+
 traversal dynamicGenNodeConstructor {
     uid = DGNC,
     nodes = {ast, inode, child, attribute}
@@ -348,6 +356,12 @@ traversal dynamicGenNodeInitFunctions {
     uid = DGIF,
 
     nodes = {ast, inode, child, attribute}
+};
+
+traversal dynamicGenEmptyNodeInitFunctions {
+    uid = DGEIF,
+
+    nodes = {inode}
 };
 
 
@@ -736,7 +750,8 @@ node rte {
 	rules {
 		"RTE<>",
 		"RTE<{rule}>" = "node = ASTrte(); RTE_RULE(node) = rule",
-		"RTE<{rule}, {next}>" = "node = ASTrte(); RTE_RULE(node) = rule; RTE_NEXT(node) = next"
+		"RTE<{rule}, {next}>" = "node = ASTrte(); RTE_RULE(node) = rule; RTE_NEXT(node) = next", 
+		"{rule}; *{next};?$" = "node = rule; RTE_NEXT(node) = next"
 	}
 };
 
@@ -839,5 +854,5 @@ node id {
         int row,
         int col_begin,
         int col_end
-    }
+    },
 };

@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "ccn/dynamic_core.h"
+#include "frontend/symboltable.h"
 #include "gen_helpers/out_macros.h"
 #include "palm/ctinfo.h"
 #include "palm/str.h"
@@ -13,9 +14,14 @@ GeneratorContext *ctx;
 static int rule_count = 0;
 node_st *rte;
 node_st *field;
+node_st *type;
+node_st *id;
+node_st *st;
 
 node_st *DGSHTast(node_st *node) {
     ctx = globals.gen_ctx;
+    st = AST_STABLE(node);
+
     GNopenIncludeFile(ctx, "shorthand.h");
 
     // Include necessary files
@@ -54,9 +60,34 @@ node_st *DGSHTast(node_st *node) {
                     field = PATTERN_FIELDS(RULE_PATTERN(RTE_RULE(rte)));
 
                     while (field) {
-                        if (!FIELD_IS_ATTRIBUTE(field))
+                        if (!FIELD_IS_ATTRIBUTE(field)) {
                             OUT("node_st *%s = args->n;\n", FIELD_NAME(field));
-                        else
+
+                            // Check if the given node matches the required type
+                            type = STlookup(st, FIELD_NODE_TYPE(field));
+
+                            if (NODE_TYPE(type) == NT_INODE)
+                                OUT("if (NODE_TYPE(%s) != NT_%s) return "
+                                    "NULL;\n",
+                                    FIELD_NAME(field),
+                                    ID_UPR(FIELD_NODE_TYPE(field)));
+                            else if (NODE_TYPE(type) == NT_INODESET &&
+                                     INODESET_UNPACKED(type)) {
+                                id = INODESET_UNPACKED(type);
+
+                                OUT("if (");
+                                while (id) {
+                                    OUT_NO_INDENT("NODE_TYPE(%s) != NT_%s",
+                                                  FIELD_NAME(field),
+                                                  ID_UPR(id));
+                                    if (ID_NEXT(id))
+                                        OUT_NO_INDENT(" &&");
+                                    id = ID_NEXT(id);
+                                }
+                                OUT(") return NULL;\n");
+                            }
+
+                        } else
                             switch (FIELD_ATTR_TYPE(field)) {
                             case AT_int:
                                 OUT("int %s = args->i;\n", FIELD_NAME(field));
