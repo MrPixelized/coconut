@@ -32,29 +32,6 @@ node_st *CRRast(node_st *node) {
     while (last && RTE_NEXT(last))
         last = RTE_NEXT(last);
 
-    node_st *test;
-
-    // This actually works!
-    node_st *rule = CCNshorthand("RULE<>");
-    test = CCNshorthand("RTE<RULE<>>;"
-                        "RTE<%n>;"
-                        "RTE<RULE<>>;",
-                        rule);
-
-    while (test) {
-        if (NODE_TYPE(test) == NT_RTE)
-            printf("OK\n");
-        else
-            printf("FAIL\n");
-
-        if (NODE_TYPE(RTE_RULE(test)) == NT_RULE)
-            printf("OK\n");
-        else
-            printf("FAIL\n");
-
-        test = RTE_NEXT(test);
-    }
-
     // Keep iterating over the table and rewrite every raw string to a
     // pattern
     TRAVopt(first);
@@ -81,7 +58,13 @@ node_st *CRRraw_rule(node_st *node) {
     node_st *curr = fields;
 
     while (curr) {
-        // Lookup type of a matching child/attribute and link it to the field
+        // If this field is called "node", its type will be self
+        if (strcasecmp("node", FIELD_NAME(curr)) == 0) {
+            FIELD_NODE_TYPE(curr) = INODE_NAME(type);
+            FIELD_IS_ATTRIBUTE(curr) = false;
+        }
+
+        // If not self, lookup type of a matching child and link it to the field
         node_st *child = INODE_ICHILDREN(type);
         while (child) {
             if (strcasecmp(ID_LWR(CHILD_NAME(child)), FIELD_NAME(curr)) == 0) {
@@ -92,6 +75,7 @@ node_st *CRRraw_rule(node_st *node) {
             child = CHILD_NEXT(child);
         }
 
+        // If not child, lookup type of a matching attribute and link to field
         node_st *attribute = INODE_IATTRIBUTES(type);
         while (attribute && !child) {
             if (strcasecmp(ID_LWR(ATTRIBUTE_NAME(attribute)),

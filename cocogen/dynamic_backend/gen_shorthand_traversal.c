@@ -48,6 +48,9 @@ node_st *DGSHTast(node_st *node) {
     // node
     OUT_START_FUNC("node_st *SHrunrule(int r, struct shorthand_arg *args)");
     {
+        // Expose "node" to the user
+        OUT("node_st *node = NULL;\n");
+
         OUT_BEGIN_SWITCH("r");
         {
             rte = AST_RTABLE(node);
@@ -110,7 +113,7 @@ node_st *DGSHTast(node_st *node) {
                         field = FIELD_NEXT(field);
                     }
 
-                    OUT("node_st *node = NULL;\n");
+                    // Insert user code and return exposed "node" variable
                     OUT("%s;\n", PATTERN_TEMPLATE(RULE_RESULT(RTE_RULE(rte))));
                     OUT("return node;\n");
 
