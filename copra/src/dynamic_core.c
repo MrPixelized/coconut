@@ -153,6 +153,7 @@ struct ccn_node *CCNparsepattern(char *pattern, struct shorthand_arg *args) {
     struct shorthand_arg *rrargs = NULL; // Args for single node generator
     struct shorthand_arg *larg = NULL;   // Tail of regular args
     regmatch_t match;                    // Regex match of the rule
+    node_st *new;                        // New node generated for the rule
     int r;                               // Rule number
     int i = 0;                           // Index of placeholder in pattern
     int offset = 0;                      // Index of placeholder irt previous
@@ -165,39 +166,65 @@ struct ccn_node *CCNparsepattern(char *pattern, struct shorthand_arg *args) {
      *       |         |         represented by rrargs
      * a %n b    %n     %n e
      *    ^
-     *  larg                     larg is the last arg before the removed args,
-     *                           in the new shorthand_arg chain with the newly
+     *  larg                     larg is the last arg before the removed
+     args,
+     *                           in the new shorthand_arg chain with the
+     newly
      *                           inserted single %n
      */
 
     // Loop over all generated regex rules until one is found in the pattern
     for (r = 0; r < rules_sh; r++) {
-        if (!regexec(&regex_sh[r], pattern, 1, &match, 0))
+        if (regexec(&regex_sh[r], pattern, 1, &match, 0))
+            continue;
+
+        // Find the rrargs for this match
+        i = 0;
+        offset = 0;
+        remainder = pattern;
+        arg = args;
+        while ((offset = CCNpatternnext(remainder))) {
+            remainder += offset;
+            i += offset;
+
+            if (i >= match.rm_so && i < match.rm_eo) {
+                rrargs = arg;
+                break;
+            }
+
+            arg = arg->next;
+        }
+
+        // Attempt to get the generated node from runrule
+        new = SHrunrule(r, rrargs);
+
+        // If this rule cannot be used with these arguments, try the next one
+        if (new)
             break;
     }
 
     // If no new rules can be applied, return the generated node
     if (r == rules_sh) {
-        if (!args) {
-            printf("Returning NULL\n\n");
+        if (!args)
             return NULL;
-        }
-
-        printf("Returning Something\n\n");
         return args->n;
     }
 
     // Loop over the placeholders in the pattern, removing shadowed placeholders
     // from the argument list and storing them for a call to SHrunrule
+    i = 0;
+    offset = 0;
+    remainder = pattern;
+    arg = args;
     while ((offset = CCNpatternnext(remainder))) {
         remainder += offset;
         i += offset;
 
         if (i < match.rm_so) {
+            // Store the last argument before the rrargs
             larg = arg;
         } else if (i < match.rm_eo) {
-            if (!rrargs)
-                rrargs = arg;
+            // Remove the placeholder in rrargs
             if (larg)
                 larg->next = arg->next;
         } else {
@@ -207,21 +234,22 @@ struct ccn_node *CCNparsepattern(char *pattern, struct shorthand_arg *args) {
         arg = arg->next;
     }
 
-    // Add the newly generated node into the argument list
-    struct shorthand_arg *new_node = MEMmalloc(sizeof(struct shorthand_arg));
-    new_node->n = SHrunrule(r, rrargs);
-    if (larg) {
-        new_node->next = larg->next;
-        larg->next = new_node;
-    } else {
-        args = new_node;
-    }
-
     // Print some status ifo
     printf("Pattern: %s -> Rule %i: [%u - %u]: %s\n", pattern, r, match.rm_so,
            match.rm_eo,
            STRsubStr(pattern, match.rm_so, match.rm_eo - match.rm_so));
 
+    // Add the newly generated node into the argument list
+    struct shorthand_arg *new_node = MEMmalloc(sizeof(struct shorthand_arg));
+    new_node->n = new;
+
+    if (larg) {
+        new_node->next = larg->next;
+        larg->next = new_node;
+    } else {
+        new_node->next = arg;
+        args = new_node;
+    }
     // Replace the matched part of the language with %n
     pattern =
         STRsubstSlice(pattern, match.rm_so, match.rm_eo - match.rm_so, "%n");
